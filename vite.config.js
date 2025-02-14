@@ -2,7 +2,7 @@ import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
 import react from '@vitejs/plugin-react';
 
-export default defineConfig({
+export default defineConfig(({ command, mode }) => ({
     plugins: [
         laravel({
             input: 'resources/js/app.jsx',
@@ -10,4 +10,11 @@ export default defineConfig({
         }),
         react(),
     ],
-});
+    server: {
+        host: true,
+        https: mode === 'production' // Enable HTTPS in production
+    },
+    build: {
+        manifest: true, // Ensures correct asset URLs
+    },
+}));
