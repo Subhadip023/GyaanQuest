@@ -17,7 +17,7 @@ export default defineConfig(({ command, mode }) => ({
         https: mode === 'production', // Enable HTTPS in production
     },
     build: {
-        manifest: true, // Ensures `manifest.json` is generated
+        // manifest: true, // Ensures `manifest.json` is generated
         outDir: 'public/build', // Correct output path for Laravel
         emptyOutDir: true, // Clears old files before building
     },
