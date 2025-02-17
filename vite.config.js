@@ -18,7 +18,7 @@ export default defineConfig(({ command, mode }) => ({
     },
     build: {
         manifest: true, // Ensures `manifest.json` is generated
-        outDir: 'public/build', // Correct output path for Laravel
+        outDir: 'public/build/.vite', // Correct output path for Laravel
         emptyOutDir: true, // Clears old files before building
     },
 }));
