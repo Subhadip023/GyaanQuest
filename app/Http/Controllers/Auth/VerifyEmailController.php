@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Log;
 
 class VerifyEmailController extends Controller
 {
@@ -14,8 +15,7 @@ class VerifyEmailController extends Controller
      */
     public function __invoke(EmailVerificationRequest $request): RedirectResponse
     {
-
-        try{
+        try {
             if ($request->user()->hasVerifiedEmail()) {
                 return redirect()->intended(route('dashboard', absolute: false).'?verified=1');
             }
@@ -25,10 +25,10 @@ class VerifyEmailController extends Controller
             }
     
             return redirect()->intended(route('dashboard', absolute: false).'?verified=1');
+        } catch (\Exception $e) {
+            // Log the error message to the log file
+            Log::error('Email verification error: ' . $e->getMessage());
+            return response()->json(['error' => 'Something went wrong, please try again later.'], 500);
         }
-        catch(\Exception $e){
-            return $e->getMessage();
-        }
-        
     }
 }
