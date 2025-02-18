@@ -25,7 +25,7 @@ RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
     && npm run build
 
 # Set permissions
-RUN chown -R www-data:www-data /var/www/html
+RUN mkdir -p /var/www/html/storage && chown -R www-data:www-data /var/www/html/storage && chmod -R 775 /var/www/html/storage
 # Give the proper permissions to the storage directory
 RUN chmod -R 775 /var/www/html/storage
 
