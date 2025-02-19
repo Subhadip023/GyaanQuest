@@ -2,10 +2,10 @@ import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
 import react from '@vitejs/plugin-react';
 
-export default defineConfig(({ command, mode }) => ({
+export default defineConfig({
     plugins: [
         laravel({
-            input: ['resources/js/app.jsx'], // Ensure correct input format
+            input: 'resources/js/app.jsx',
             refresh: true,
         }),
         react(),
@@ -21,4 +21,4 @@ export default defineConfig(({ command, mode }) => ({
         outDir: 'public/build', // Correct output path for Laravel
         emptyOutDir: true, // Clears old files before building
     },
-}));
+});
