@@ -1,0 +1,29 @@
+services:
+  - name: gyaan-quest
+    type: web
+    runtime: docker
+    repo: https://github.com/Subhadip023/GyaanQuest.git
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_URL
+        value: https://gyaanquest.onrender.com  
+      - key: APP_FORCE_HTTPS
+        value: "true"
+      - key: APP_KEY
+        generateValue: true
+      - key: DB_CONNECTION
+        value: pgsql
+    buildCommand: |
+      composer install --no-dev --optimize-autoloader
+      npm install && npm run build
+      php artisan cache:clear
+      php artisan config:clear
+      php artisan route:clear
+      php artisan view:clear
+      php artisan config:cache
+      php artisan optimize:clear
+      php artisan migrate --force
+    startCommand: |
+      php-fpm -D && nginx -g "daemon off;"
+    plan: free
