@@ -17,6 +17,8 @@ Route::get('/', function () {
         'canRegister' => Route::has('register'),
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
+'bgImageUrl' => asset('images/main-bg.jpg'),
+'girlImageUrl' => asset('images/main-girl-image.jpg')
     ]);
 });
 
@@ -39,21 +41,6 @@ Route::get('view-logs', function () {
 
 
 
-Route::get('/generate-verification-link/{id}', function ($id) {
-    $user = User::find($id);
-
-    if (!$user) {
-        return response()->json(['error' => 'User not found'], 404);
-    }
-
-    $link = URL::temporarySignedRoute(
-        'verification.verify',
-        Carbon::now()->addMinutes(60), // Link expires in 60 minutes
-        ['id' => $user->id, 'hash' => sha1($user->getEmailForVerification())]
-    );
-
-    return response()->json(['verification_link' => $link]);
-});
 
 
 require __DIR__.'/auth.php';

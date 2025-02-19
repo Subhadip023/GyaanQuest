@@ -14,6 +14,7 @@ export default {
         extend: {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                playpen: ['"Playpen Sans"', 'cursive'], // Add Playpen Sans
             },
         },
     },
