@@ -19,6 +19,6 @@ export default defineConfig(({ command, mode }) => ({
     build: {
         outDir: 'public/build', // Correct output path for Laravel
         emptyOutDir: true, // Clears old files before building
-        manifest: true, // Ensure Laravel can find Vite assets
+        // manifest: true, // Ensure Laravel can find Vite assets
     },
 }));
