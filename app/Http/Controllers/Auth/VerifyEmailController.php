@@ -26,7 +26,6 @@ class VerifyEmailController extends Controller
     
             return redirect()->intended(route('dashboard', absolute: false).'?verified=1');
         } catch (\Exception $e) {
-            // Log the error message to the log file
             Log::error('Email verification error: ' . $e->getMessage());
             return response()->json(['error' => 'Something went wrong, please try again later.'], 500);
         }
