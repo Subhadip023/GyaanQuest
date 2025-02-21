@@ -48,7 +48,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion, bgImageUrl, 
                         transition={{ duration: 1, ease: "easeOut", delay: 0.5 }}
                         className="md:h-2/3 h-1/3 md:w-1/3 w-4/5 z-10 rounded-2xl flex flex-col items-center mt-20"
                     >
-                        <div className="border-4 border-blue-800 mt-10 w-fit h-fit flex font-bold text-8xl items-center">
+                        <div className="border-4 border-blue-800 mt-10 w-fit h-fit flex font-bold text-6xl items-center">
                             <div className="bg-blue-800 px-5 py-2 text-white h-full flex items-center">
                                 Gyaan
                             </div>
