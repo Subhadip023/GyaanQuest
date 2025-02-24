@@ -38,6 +38,10 @@ Route::get('view-logs', function () {
              ->header('Content-Type', 'text/plain');
 });
 
+Route::get('admin',function () {
+   return Inertia('Admin/Layout'); 
+});
+
 
 
 

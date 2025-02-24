@@ -27,3 +27,4 @@ Dockerfile
 render.yaml
 vite.config.js
 vite.config.js
+vite.config copy.js
