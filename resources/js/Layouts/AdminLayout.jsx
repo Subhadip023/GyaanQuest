@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Head, Link } from "@inertiajs/react";
+import { Head, Link ,usePage} from "@inertiajs/react";
 import { TfiMenu } from "react-icons/tfi";
 
 import DarkModeBtn from "@/Components/DarkModeBtn";
