@@ -4,13 +4,31 @@ import { TfiMenu } from "react-icons/tfi";
 
 import DarkModeBtn from "@/Components/DarkModeBtn";
 import UserDetails from "@/Components/UserDetails";
-import CollabsableDiv from "./Partials/CollabsableDiv";
-import SideBarLink from "./Partials/SideBarLink";
-import logo from "../../../../public/images/image.png";
+import CollabsableDiv from "../Pages/Admin/Partials/CollabsableDiv";
+import SideBarLink from "../Pages/Admin/Partials/SideBarLink";
+import logo from "../../../public/images/image.png";
 
-function Layout({ title = "admin" }) {
+function AdminLayout({ title = "admin", children }) {
     const [isSideBarOpen, setIsSideBarOpen] = useState(true);
+    const user = usePage().props.auth.user;
+    const successMessage = usePage().props.flash?.success;
+    const errorMessage = usePage().props.flash?.error;
 
+    useEffect(() => {
+        if (successMessage) {
+            toast.success(successMessage, {
+                position: "top-right",
+                autoClose: 2000,
+            });
+        }
+
+        if (errorMessage) {
+            toast.error(errorMessage, {
+                position: "top-center",
+                autoClose: 2000,
+            });
+        }
+    }, [successMessage, errorMessage]);
     useEffect(() => {
         if (localStorage.getItem("theme") === "dark") {
             document.documentElement.classList.add("dark");
@@ -306,60 +324,10 @@ function Layout({ title = "admin" }) {
                     isSideBarOpen ? "ml-64" : "ml-0"
                 }`}
             >
-                Lorem ipsum dolor, sit amet consectetur adipisicing elit. Error
-                repellendus exercitationem nemo quia vitae qui aperiam
-                perferendis id earum similique magni laboriosam iusto, ut
-                aliquam ab quisquam dolorum eos quidem officiis? Ad, sapiente
-                hic! Animi aliquid voluptatibus, voluptas, perferendis assumenda
-                ratione molestiae omnis laudantium, error unde laboriosam
-                reiciendis? Eius dolore repellendus fugiat earum enim ratione,
-                saepe minus adipisci laborum aperiam exercitationem id quas,
-                beatae suscipit ipsum asperiores dolorem quia, esse nulla omnis?
-                Dolor maiores perferendis pariatur possimus voluptatum, debitis
-                voluptatibus numquam porro voluptate tempora sunt quas dicta cum
-                odio mollitia accusantium corporis! Nisi, quo. Assumenda
-                necessitatibus sequi voluptatibus unde veritatis fuga
-                consequuntur commodi! Eveniet eligendi molestiae, recusandae
-                maiores earum accusamus omnis voluptatibus, quasi enim placeat
-                dolorem delectus explicabo ullam soluta tenetur saepe expedita
-                quis veniam rerum cupiditate in dolore, excepturi nam. Illum
-                suscipit asperiores magni harum error velit fuga vitae numquam
-                cum facere. Debitis iste repudiandae nemo omnis id voluptatibus.
-                Fugiat numquam quaerat quas ipsam possimus consequuntur
-                explicabo tempora incidunt nisi, iste quibusdam obcaecati quia
-                alias velit molestiae libero ducimus cum eaque optio maxime
-                asperiores molestias. Delectus, amet quisquam explicabo tempora
-                similique numquam earum iure debitis voluptatum inventore
-                assumenda tempore reiciendis voluptatibus esse sequi, porro
-                facere soluta, voluptas odit labore enim eius deserunt?
-                Provident in non veritatis maiores porro officia quas
-                repellendus? Fugiat eius sunt, nesciunt error corporis mollitia
-                quas quidem praesentium provident, doloribus, doloremque iusto?
-                Sequi a facilis sapiente dignissimos commodi modi. Quas,
-                adipisci tempore reiciendis inventore culpa dolor laudantium
-                consequuntur explicabo quisquam temporibus, quia minus commodi,
-                ipsa at dignissimos officiis non neque sed autem. Atque rerum
-                eaque voluptate cumque. Unde non beatae odit facilis? Obcaecati,
-                at ratione? Impedit voluptate laborum dolor itaque. Beatae
-                dolorem placeat eum adipisci tempora iusto similique officia
-                blanditiis deleniti neque dicta recusandae maiores provident
-                voluptates, ipsam consequatur, doloribus, reiciendis voluptas
-                hic debitis eos! Accusantium, praesentium. Fugiat ullam placeat
-                temporibus dolorum minima vitae exercitationem quidem voluptates
-                quae. Repudiandae, beatae suscipit sapiente amet perspiciatis
-                ipsum natus quo nihil at magnam exercitationem impedit eligendi.
-                Quidem porro beatae vero saepe nemo dicta, corrupti veritatis
-                itaque et inventore dignissimos accusantium dolore cumque amet
-                voluptatibus ab iste, neque optio! Expedita nemo dolorum
-                deleniti tenetur labore doloribus minima maxime dignissimos, ut
-                quaerat quam quia iure non quasi vero doloremque unde eaque
-                consequatur recusandae, commodi voluptates saepe iusto id.
-                Perferendis esse corrupti ipsum aut, nemo laborum cupiditate
-                blanditiis sunt harum impedit quisquam voluptates aperiam quam,
-                voluptatum molestiae alias modi porro veritatis.
+                {children}
             </main>
         </>
     );
 }
 
-export default Layout;
+export default AdminLayout;
