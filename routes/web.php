@@ -20,7 +20,8 @@ Route::get('/', function () {
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
 'bgImageUrl' => asset('images/main-bg.jpg'),
-'girlImageUrl' => asset('images/main-girl-image.jpg')
+'girlImageUrl' => asset('images/main-girl-image.jpg'),
+'isAuth' => auth()->check(),
     ]);
 });
 
