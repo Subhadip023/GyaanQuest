@@ -43,9 +43,9 @@ Route::get('view-logs', function () {
 
 Route::get('admin',function () {
    return Inertia('Admin/Index'); 
-});
+})->name('admin');
 
-Route::resource('role',RoleController::class);
+Route::resource('roles',RoleController::class);
 
 
 

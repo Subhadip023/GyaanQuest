@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Head, Link ,usePage} from "@inertiajs/react";
+import { Head, Link, usePage } from "@inertiajs/react";
 import { TfiMenu } from "react-icons/tfi";
 
 import DarkModeBtn from "@/Components/DarkModeBtn";
@@ -8,7 +8,13 @@ import CollabsableDiv from "../Pages/Admin/Partials/CollabsableDiv";
 import SideBarLink from "../Pages/Admin/Partials/SideBarLink";
 import logo from "../../../public/images/image.png";
 
-function AdminLayout({ title = "admin", children }) {
+function AdminLayout({
+    title = "Admin",
+    children,
+    heading = "GyaanQuest",
+    isShowHeading = true,
+    isShowBgBox = true,
+}) {
     const [isSideBarOpen, setIsSideBarOpen] = useState(true);
     const user = usePage().props.auth.user;
     const successMessage = usePage().props.flash?.success;
@@ -40,19 +46,19 @@ function AdminLayout({ title = "admin", children }) {
             <Head title={title} />
 
             <nav className="bg-white border-gray-200 dark:bg-gray-800 border-b-2 py-1 h-[11vh]">
-                <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-                    <div className="flex gap-x-5 items-center">
+                <div className="w-full flex flex-wrap items-center justify-between mx-auto p-4">
+                    <div className="flex gap-x-5 items-center ml-5">
                         <Link
                             to="/admin"
                             className="flex items-center  space-x-3 rtl:space-x-reverse"
                         >
-                            <img
+                            {/* <img
                                 src={logo}
                                 className="absolute hidden sm:flex top-0.5 left-0  w-32"
                                 alt=""
                                 style={{ marginTop: "-20.5px" }}
-                            />
-                            <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
+                            /> */}
+                            <span className="self-center text-2xl font-semibold whitespace-nowrap text-blue-700 dark:text-blue-500 ">
                                 GyaanQuest
                             </span>
                         </Link>
@@ -143,13 +149,12 @@ function AdminLayout({ title = "admin", children }) {
 
             <aside
                 id="sidebar-multi-level-sidebar"
-                className={`fixed top-18 left-0 border-r-2 z-40 md:w-64 w-full  h-screen transition-transform ${
-                    isSideBarOpen ? "translate-x-0" : "-translate-x-full"
-                }`}
+                className={`fixed top-18 left-0 border-r-2 z-40 md:w-64 w-full bg-white  h-screen transition-transform ${isSideBarOpen ? "translate-x-0" : "-translate-x-full"
+                    }`}
             >
-                <div className="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
+                <div className="h-full px-3 py-4 overflow-y-auto  bg-white dark:bg-gray-800">
                     <ul className="space-y-2 font-medium">
-                        <SideBarLink active={route().current("admin")}>
+                        <SideBarLink active={route().current('admin')} href={route('admin')}>
                             <svg
                                 className="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                 aria-hidden="true"
@@ -161,6 +166,21 @@ function AdminLayout({ title = "admin", children }) {
                                 <path d="M12.5 0c-.157 0-.311.01-.565.027A1 1 0 0 0 11 1.02V10h8.975a1 1 0 0 0 1-.935c.013-.188.028-.374.028-.565A8.51 8.51 0 0 0 12.5 0Z" />
                             </svg>
                             <span className="ms-3">Dashboard</span>
+                        </SideBarLink>
+
+
+                        <SideBarLink active={route().current('roles.index')} href={route('roles.index')}>
+                            <svg 
+                                                    fill="currentColor"
+        
+                    className="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+
+                            viewBox="0 0 52 52" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M38.3,27.2A11.4,11.4,0,1,0,49.7,38.6,11.46,11.46,0,0,0,38.3,27.2Zm2,12.4a2.39,2.39,0,0,1-.9-.2l-4.3,4.3a1.39,1.39,0,0,1-.9.4,1,1,0,0,1-.9-.4,1.39,1.39,0,0,1,0-1.9l4.3-4.3a2.92,2.92,0,0,1-.2-.9,3.47,3.47,0,0,1,3.4-3.8,2.39,2.39,0,0,1,.9.2c.2,0,.2.2.1.3l-2,1.9a.28.28,0,0,0,0,.5L41.1,37a.38.38,0,0,0,.6,0l1.9-1.9c.1-.1.4-.1.4.1a3.71,3.71,0,0,1,.2.9A3.57,3.57,0,0,1,40.3,39.6Z" />
+                                <circle cx="21.7" cy="14.9" r="12.9" />
+                                <path d="M25.2,49.8c2.2,0,1-1.5,1-1.5h0a15.44,15.44,0,0,1-3.4-9.7,15,15,0,0,1,1.4-6.4.77.77,0,0,1,.2-.3c.7-1.4-.7-1.5-.7-1.5h0a12.1,12.1,0,0,0-1.9-.1A19.69,19.69,0,0,0,2.4,47.1c0,1,.3,2.8,3.4,2.8H24.9C25.1,49.8,25.1,49.8,25.2,49.8Z" />
+                            </svg>
+                            <span className="ms-3">Role</span>
                         </SideBarLink>
                         <CollabsableDiv>
                             <li>
@@ -296,8 +316,9 @@ function AdminLayout({ title = "admin", children }) {
                             </a>
                         </li>
                         <li>
-                            <a
-                                href="#"
+                            <Link
+                                href={route('logout')}
+                                method="post"
                                 className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
                             >
                                 <svg
@@ -314,17 +335,25 @@ function AdminLayout({ title = "admin", children }) {
                                 <span className="flex-1 ms-3 whitespace-nowrap">
                                     Sign Up
                                 </span>
-                            </a>
+                            </Link>
                         </li>
                     </ul>
                 </div>
             </aside>
             <main
-                className={`bg-blue-50 dark:bg-slate-950 dark:text-white  h-[89vh] p-5 ${
-                    isSideBarOpen ? "ml-64" : "ml-0"
-                }`}
+                className={`bg-blue-50 dark:bg-slate-950 dark:text-white overflow-y-auto scrollbar h-[89vh] p-5 ${isSideBarOpen ? "md:ml-64" : "ml-0"
+                    }`}
             >
-                {children}
+                <div
+                    className="border-b-2  border-gray-400 h-20 pb-2 text-blue-700 dark:text-blue-500
+                 flex items-center font-bold text-4xl"
+                >
+                    <img src={logo} className="hidden sm:flex w-32" alt="" />
+                    {heading}
+                </div>
+                <div className="bg-white p-5 dark:bg-gray-800 dark:text-white mt-5 shadow-md min-h-28 h-fit ">
+                    {children}
+                </div>
             </main>
         </>
     );

@@ -40,8 +40,8 @@ Route::middleware('auth')->group(function () {
     Route::get('verify-email', EmailVerificationPromptController::class)
         ->name('verification.notice');
 
-        Route::post('/send-otp', [OtpController::class, 'sendOtp'])->name('send-otp');
-        Route::post('/verify-otp', [OtpController::class, 'verifyOtp'])->name('verify-otp');
+    Route::post('/send-otp', [OtpController::class, 'sendOtp'])->name('send-otp');
+    Route::post('/verify-otp', [OtpController::class, 'verifyOtp'])->name('verify-otp');
 
     Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)
         ->middleware(['signed', 'throttle:6,1'])
