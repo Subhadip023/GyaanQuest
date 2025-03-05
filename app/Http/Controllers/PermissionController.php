@@ -3,28 +3,19 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Inertia\Inertia;
-use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
-
-
-class RoleController extends Controller
+class PermissionController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-
-        
-        $roles = Role::with('permissions')->latest()->get();
-        $permissions = Permission::pluck('name')->toArray();
-        return Inertia::render('Admin/Roles/Index', [
-            'roles' => $roles,
-            'permissions'=>$permissions,
-        ]);
+        //
     }
+
     /**
      * Show the form for creating a new resource.
      */
@@ -41,28 +32,30 @@ class RoleController extends Controller
         try {
             // Validate input
             $valData = $request->validate([
-                'name' => 'required|string|max:255|unique:roles,name',
-                'permissions' => 'nullable|array', 
-                'permissions.*' => 'exists:permissions,name', 
+                'name' => 'required|string|max:255|unique:permissions,name',
             ]);
     
-            // Create the role
-            $role = Role::create(['name' => $valData['name']]);
+            // Create the permission
+            $permission = Permission::create($valData);
     
-            // Assign permissions if provided
-            if (!empty($valData['permissions'])) {
-                $role->givePermissionTo($valData['permissions']);
+            // Assign permission to the 'admin' role
+            $adminRole = Role::where('name', 'admin')->first();
+            if ($adminRole) {
+                $permission->assignRole($adminRole);
             }
     
             // Redirect back with success message
-            return redirect()->back()->with('success', "Role created successfully with permissions");
+            return redirect()->back()->with('success', "Permission created successfully");
     
         } catch (\Exception $e) {
+            // Log error
+            // Log::error("Permission creation failed: " . $e->getMessage());
     
+            // Redirect back with error message
             return redirect()->back()->with('error', "Something went wrong. Please try again.");
         }
     }
-    
+
     /**
      * Display the specified resource.
      */
@@ -94,5 +87,4 @@ class RoleController extends Controller
     {
         //
     }
-    
 }

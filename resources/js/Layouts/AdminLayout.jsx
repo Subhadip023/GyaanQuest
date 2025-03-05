@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Head, Link, usePage } from "@inertiajs/react";
+import { Head, Link, usePage, useForm } from "@inertiajs/react";
 import { TfiMenu } from "react-icons/tfi";
 
 import DarkModeBtn from "@/Components/DarkModeBtn";
@@ -7,31 +7,41 @@ import UserDetails from "@/Components/UserDetails";
 import CollabsableDiv from "../Pages/Admin/Partials/CollabsableDiv";
 import SideBarLink from "../Pages/Admin/Partials/SideBarLink";
 import logo from "../../../public/images/image.png";
+import Modal from "@/Components/Modal";
+import { ToastContainer, toast } from 'react-toastify';
+import Loader from "@/Components/Loader";
+
 
 function AdminLayout({
     title = "Admin",
     children,
     heading = "GyaanQuest",
-    isShowHeading = true,
-    isShowBgBox = true,
+    showHeading = true,
+    showBgBox = true,
+    serachBoxPlaceHolder = "Search...",
 }) {
     const [isSideBarOpen, setIsSideBarOpen] = useState(true);
-    const user = usePage().props.auth.user;
     const successMessage = usePage().props.flash?.success;
     const errorMessage = usePage().props.flash?.error;
+    const [searchValue, setSearchValue] = useState(null);
+    
+    const handleSearch = (e) => {
+        setSearchValue(e.target.value);
+        console.log(searchValue)
+    };
 
     useEffect(() => {
         if (successMessage) {
             toast.success(successMessage, {
                 position: "top-right",
-                autoClose: 2000,
+                autoClose: 5000,
             });
         }
 
         if (errorMessage) {
             toast.error(errorMessage, {
-                position: "top-center",
-                autoClose: 2000,
+                position: "top-right",
+                autoClose: 5000,
             });
         }
     }, [successMessage, errorMessage]);
@@ -41,11 +51,14 @@ function AdminLayout({
         }
     }, []);
 
+
     return (
         <>
+        {/* <Loader/> */}
             <Head title={title} />
 
-            <nav className="bg-white border-gray-200 dark:bg-gray-800 border-b-2 py-1 h-[11vh]">
+
+            <nav className="bg-white border-gray-200 dark:bg-gray-800 border-b-2 py-1 min-h-fit h-[11vh]">
                 <div className="w-full flex flex-wrap items-center justify-between mx-auto p-4">
                     <div className="flex gap-x-5 items-center ml-5">
                         <Link
@@ -89,13 +102,12 @@ function AdminLayout({
                             </svg>
                         </button>
                     </div>
-                    <button
+                    {/* <button
                         type="button"
-                        data-collapse-toggle="navbar-search"
-                        aria-controls="navbar-search"
-                        aria-expanded="false"
+                     
                         className="md:hidden text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5 me-1"
-                    >
+                       
+                                                >
                         <svg
                             className="w-5 h-5"
                             aria-hidden="true"
@@ -112,7 +124,7 @@ function AdminLayout({
                             />
                         </svg>
                         <span className="sr-only">Search</span>
-                    </button>
+                    </button> */}
                     <div className="relative hidden md:block">
                         <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                             <svg
@@ -133,10 +145,11 @@ function AdminLayout({
                             <span className="sr-only">Search icon</span>
                         </div>
                         <input
+                            onChange={handleSearch}
                             type="text"
                             id="search-navbar"
                             className="block w-96 p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                            placeholder="Search..."
+                            placeholder={serachBoxPlaceHolder}
                         />
                     </div>
 
@@ -170,12 +183,12 @@ function AdminLayout({
 
 
                         <SideBarLink active={route().current('roles.index')} href={route('roles.index')}>
-                            <svg 
-                                                    fill="currentColor"
-        
-                    className="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                            <svg
+                                fill="currentColor"
 
-                            viewBox="0 0 52 52" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg">
+                                className="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+
+                                viewBox="0 0 52 52" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M38.3,27.2A11.4,11.4,0,1,0,49.7,38.6,11.46,11.46,0,0,0,38.3,27.2Zm2,12.4a2.39,2.39,0,0,1-.9-.2l-4.3,4.3a1.39,1.39,0,0,1-.9.4,1,1,0,0,1-.9-.4,1.39,1.39,0,0,1,0-1.9l4.3-4.3a2.92,2.92,0,0,1-.2-.9,3.47,3.47,0,0,1,3.4-3.8,2.39,2.39,0,0,1,.9.2c.2,0,.2.2.1.3l-2,1.9a.28.28,0,0,0,0,.5L41.1,37a.38.38,0,0,0,.6,0l1.9-1.9c.1-.1.4-.1.4.1a3.71,3.71,0,0,1,.2.9A3.57,3.57,0,0,1,40.3,39.6Z" />
                                 <circle cx="21.7" cy="14.9" r="12.9" />
                                 <path d="M25.2,49.8c2.2,0,1-1.5,1-1.5h0a15.44,15.44,0,0,1-3.4-9.7,15,15,0,0,1,1.4-6.4.77.77,0,0,1,.2-.3c.7-1.4-.7-1.5-.7-1.5h0a12.1,12.1,0,0,0-1.9-.1A19.69,19.69,0,0,0,2.4,47.1c0,1,.3,2.8,3.4,2.8H24.9C25.1,49.8,25.1,49.8,25.2,49.8Z" />
@@ -253,10 +266,7 @@ function AdminLayout({
                             </a>
                         </li>
                         <li>
-                            <a
-                                href="#"
-                                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
-                            >
+                            <SideBarLink active={route().current('users.index')} href={route('users.index')}>
                                 <svg
                                     className="shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                                     aria-hidden="true"
@@ -269,8 +279,7 @@ function AdminLayout({
                                 <span className="flex-1 ms-3 whitespace-nowrap">
                                     Users
                                 </span>
-                            </a>
-                        </li>
+                                </SideBarLink>                        </li>
                         <li>
                             <a
                                 href="#"
@@ -341,17 +350,20 @@ function AdminLayout({
                 </div>
             </aside>
             <main
-                className={`bg-blue-50 dark:bg-slate-950 dark:text-white overflow-y-auto scrollbar h-[89vh] p-5 ${isSideBarOpen ? "md:ml-64" : "ml-0"
+                className={`bg-slate-100 dark:bg-slate-700 dark:text-white overflow-y-auto scrollbar h-[89vh] p-5 ${isSideBarOpen ? "md:ml-64" : "ml-0"
                     }`}
             >
-                <div
-                    className="border-b-2  border-gray-400 h-20 pb-2 text-blue-700 dark:text-blue-500
-                 flex items-center font-bold text-4xl"
+                {showHeading && <div
+                    className=" text-blue-700 dark:text-blue-500
+                 flex items-center font-bold text-4xl justify-start"
                 >
-                    <img src={logo} className="hidden sm:flex w-32" alt="" />
-                    {heading}
-                </div>
-                <div className="bg-white p-5 dark:bg-gray-800 dark:text-white mt-5 shadow-md min-h-28 h-fit ">
+                    <div className="flex items-center">  <img src={logo} className="hidden sm:flex w-32" alt="" />
+                        {heading}</div>
+
+                </div>}
+                <div className={`${showBgBox ? 'bg-white p-5 dark:bg-gray-800 dark:text-white  shadow-lg min-h-28 h-fit' : ''}`}>
+                    <ToastContainer position="top-right" autoClose={5000} />
+
                     {children}
                 </div>
             </main>

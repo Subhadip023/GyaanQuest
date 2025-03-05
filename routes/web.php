@@ -1,7 +1,10 @@
 <?php
 
+use App\Http\Controllers\assignRoles;
+use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -19,9 +22,10 @@ Route::get('/', function () {
         'canRegister' => Route::has('register'),
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
-'bgImageUrl' => asset('images/main-bg.jpg'),
-'girlImageUrl' => asset('images/main-girl-image.jpg'),
-'isAuth' => auth()->check(),
+        'bgImageUrl' => asset('images/main-bg.jpg'),
+        'girlImageUrl' => asset('images/main-girl-image.jpg'),
+        'isAuth' => auth()->check(),
+        'isAdmin'=>auth()->user()?->hasRole('admin'),
     ]);
 });
 
@@ -38,16 +42,21 @@ Route::middleware('auth')->group(function () {
 Route::get('view-logs', function () {
     $logs = file_get_contents(storage_path('logs/laravel.log'));
     return response($logs, 200)
-             ->header('Content-Type', 'text/plain');
+        ->header('Content-Type', 'text/plain');
 });
 
-Route::get('admin',function () {
-   return Inertia('Admin/Index'); 
-})->name('admin');
-
-Route::resource('roles',RoleController::class);
+Route::get('admin', function () {
+    return Inertia::render('Admin/Index');
+})->name('admin')->middleware(['auth', 'permission:view admin dashboard']);
 
 
+Route::resource('roles', RoleController::class);
+Route::resource('permissions', PermissionController::class);
+Route::resource('users',UserController::class);
+
+Route::post('/assignRole',assignRoles::class)->name('assign-role');
 
 
-require __DIR__.'/auth.php';
+
+
+require __DIR__ . '/auth.php';

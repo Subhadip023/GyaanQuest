@@ -1,3 +1,4 @@
+import Loader from "@/Components/Loader";
 import WelcomeLink from "@/Components/WelcomeLink";
 import { Head, Link } from "@inertiajs/react";
 import { motion } from "framer-motion";
@@ -10,6 +11,7 @@ export default function Welcome({
     bgImageUrl,
     girlImageUrl,
     isAuth,
+    isAdmin
 }) {
     const [isLoaded, setIsLoaded] = useState(false);
 
@@ -18,18 +20,13 @@ export default function Welcome({
         img.src = bgImageUrl;
         img.onload = () => setIsLoaded(true);
     }, [bgImageUrl]);
-
     return (
         <>
             <Head title="Welcome" />
 
             {/* Show a loading screen until the background is fully loaded */}
             {!isLoaded ? (
-                <div className="w-screen h-screen flex items-center justify-center bg-gray-200">
-                    <p className="text-2xl font-bold text-gray-700">
-                        Loading...
-                    </p>
-                </div>
+                <Loader/>
             ) : (
                 <section className="relative w-screen h-screen flex flex-col md:flex-row items-center justify-center gap-x-10 overflow-hidden">
                     {/* Background Image */}
@@ -40,22 +37,29 @@ export default function Welcome({
                         }}
                     ></div>
                     <div className=" w-full h-20 mt-5 absolute top-0 right-0 left-0 flex items-center justify-end">
-                        {isAuth && (
+                        {isAuth && !isAdmin&& (
                             <WelcomeLink href={'/login'}>
                                 DashBoard
                             </WelcomeLink>
+                          
+
                         )}
+                          {isAdmin &&
+                          <WelcomeLink href={route('admin')}>
+                          DashBoard
+                      </WelcomeLink>
+                          }
                         {!isAuth && (
                             <>
-                             
+
                                 <WelcomeLink href={'/login'}>
-                                Login
+                                    Login
                                 </WelcomeLink>
 
                                 <WelcomeLink href={'/register'}>
-                                Register
+                                    Register
                                 </WelcomeLink>
-                                
+
                             </>
                         )}
                     </div>
