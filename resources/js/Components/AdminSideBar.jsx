@@ -7,7 +7,7 @@ function AdminSideBar({isSideBarOpen=true}) {
   return (
     <aside
     id="sidebar-multi-level-sidebar"
-    className={`fixed top-18 left-0 border-r-2 z-40 md:w-64 w-full bg-white  h-screen transition-transform ${isSideBarOpen ? "translate-x-0" : "-translate-x-full"
+    className={`fixed top-18 left-0 border-r-2 z-40 md:w-64 w-full bg-white  h-[calc(100vh-72px)] transition-transform ${isSideBarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
 >
     <div className="h-full px-3 py-4 overflow-y-auto  bg-white dark:bg-gray-800">
