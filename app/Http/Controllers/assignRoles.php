@@ -1,10 +1,10 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use App\Models\User;
 use Illuminate\Http\Request;
-use PhpParser\Node\Stmt\TryCatch;
+use Illuminate\Support\Facades\Log;
+
 
 class assignRoles extends Controller
 {
@@ -15,30 +15,37 @@ class assignRoles extends Controller
     {
         try {
             $valData = $request->validate([
-                'name' => 'array|min:1',
+                'name' => 'required|array|min:1', 
                 'name.*' => 'exists:roles,name',
-                'userId' => 'required|numeric|exists:users,id', // Fixed validation
+                'userId' => 'required|numeric|exists:users,id',
             ]);
-
-            if(in_array('admin',$valData['name'])&&!auth()->user()->hasRoles('admin')){
-                return redirect()->back()->with('error', 'Can not add Admin role If you are not a admin');
-            }
-
-            $user = User::find($valData['userId']); 
-
-
+    
+            $user = User::find($valData['userId']);
             if (!$user) {
                 return redirect()->back()->with('error', 'User not found.');
             }
-
+    
+            $isAdmin = $user->hasRole('admin');
+            $authUser = auth()->user();
+    
+            // Only an admin can change another admin's role
+            if ($isAdmin && !$authUser->hasRole('admin')) {
+                return redirect()->back()->with('error', 'Only an admin can change the role of another admin.');
+            }
+    
+            // Prevent non-admins from assigning the admin role
+            if (in_array('admin', $valData['name']) && !$authUser->hasRole('admin')) {
+                return redirect()->back()->with('error', 'Cannot add Admin role if you are not an admin.');
+            }
+    
             $user->syncRoles($valData['name']);    
-
-            return redirect()->back()->with('success', 'Roles assigned to user.');
+    
+            return redirect()->back()->with('success', 'Roles assigned to '.$user->name);
         
         } catch (\Throwable $th) {
+            \Log::error('Role assignment failed: ' . $th->getMessage());
             return redirect()->back()->with('error', 'Something went wrong. Please try again.');
         }
-       
-
     }
+    
 }

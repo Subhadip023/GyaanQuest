@@ -37,14 +37,14 @@ class RoleController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
+    { $valData = $request->validate([
+        'name' => 'required|string|max:255|unique:roles,name',
+        'permissions' => 'nullable|array', 
+        'permissions.*' => 'exists:permissions,name', 
+    ]);
         try {
             // Validate input
-            $valData = $request->validate([
-                'name' => 'required|string|max:255|unique:roles,name',
-                'permissions' => 'nullable|array', 
-                'permissions.*' => 'exists:permissions,name', 
-            ]);
+           
     
             // Create the role
             $role = Role::create(['name' => $valData['name']]);
@@ -54,8 +54,7 @@ class RoleController extends Controller
                 $role->givePermissionTo($valData['permissions']);
             }
     
-            // Redirect back with success message
-            return redirect()->back()->with('success', "Role created successfully with permissions");
+            return redirect('/roles');
     
         } catch (\Exception $e) {
     
@@ -76,7 +75,7 @@ class RoleController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        
     }
 
     /**

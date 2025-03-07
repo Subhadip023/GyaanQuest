@@ -1,5 +1,6 @@
 import InputLabel from '@/Components/InputLabel';
 import Modal from '@/Components/Modal'
+import ScButton from '@/Components/ScButton';
 import AdminLayout from '@/Layouts/AdminLayout'
 import { useForm, usePage } from '@inertiajs/react';
 import React, { useState } from 'react'
@@ -39,12 +40,12 @@ function Index({ users = [], roles = [] }) {
     return (
         <AdminLayout title='Users' heading='Users'>
             <Modal show={openAddRoleModal} onClose={() => setOpenAddRoleModal(false)} maxWidth='lg'>
-                <div className="p-5 w-full">
+                <div className="p-5 w-full ">
                     <form onSubmit={handelSubmitAssignRoleForm} >
                         <InputLabel className="text-xl w-full dark:text-white">Select Role</InputLabel>
 
                         <div className="w-full flex flex-wrap gap-x-2 gap-y-1">
-                            <div className='grid grid-cols-3'> {roles
+                            <div className='grid grid-cols-3  h-[70vh] scrollbar overflow-y-auto '> {roles
                                 .filter((role) => auth.role.includes('admin') || role !== 'admin') // Keep 'admin' only if the user is an admin
                                 .map((role) => (
                                     <div key={role} className="px-5 py-2 text-green-600 flex gap-1 items-center">
@@ -67,14 +68,15 @@ function Index({ users = [], roles = [] }) {
 
 
                             <div className="w-full p-5 flex items-center gap-x-2 justify-end">
-                                <button
-                                    className={`px-5 py-2 flex items-center gap-x-2 text-white rounded-lg  ${createAssignRoleForm.processing ? 'opacity-50 cursor-not-allowed' : ''}  hover:bg-gray-700 bg-gray-500 duration-200`}
+                                <ScButton
+                                    
                                     onClick={(e) => { e.preventDefault(); setOpenAddRoleModal(false); }}
+                                    btnType='secondary'
 
                                     disabled={createAssignRoleForm.processing}
                                 >
                                     Close
-                                </button>
+                                </ScButton>
 
                                 <button
                                     disabled={createAssignRoleForm.processing}
