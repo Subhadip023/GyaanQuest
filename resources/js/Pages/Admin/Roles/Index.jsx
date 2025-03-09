@@ -7,6 +7,8 @@ import AdminLayout from "@/Layouts/AdminLayout";
 import { useForm } from "@inertiajs/react";
 import React, { useState } from "react";
 import Highlighter from "react-highlight-words";
+import EditBtn from "@/Components/EditBtn";
+import DeleteBtn from "@/Components/DeleteBtn";
 
 
 
@@ -207,8 +209,8 @@ function Index({ roles, permissions }) {
 
 
 
-            <section className="text-gray-600 dark:text-white body-font py-2">
-                <div className="w-full flex items-center justify-between ">
+            <section className="text-gray-600 dark:text-white body-font py-2 w-full">
+                <div className="w-full flex items-center justify-between mb-5">
                     <div className="w-fit p-1 flex items-center rounded-lg bg-blue-700 text-white gap-x-2">Display
                         <select value={selectNumbers} onChange={handleDisplayChange} className="text-blue-600 w-fit" name="" id="">
 
@@ -245,7 +247,7 @@ function Index({ roles, permissions }) {
                     </div>
                 </div>
 
-                <div className="lg:w-2/3 w-full mx-auto overflow-auto">
+                <div className=" w-full mx-auto overflow-auto">
                     <table className="table-auto w-full text-left whitespace-no-wrap">
                         <thead className="border-b-2 border-gray-500 dark:border-gray-100">
                             <tr>
@@ -277,7 +279,7 @@ function Index({ roles, permissions }) {
                                         />
 
                                     }</td>
-                                    <td className="px-4 py-3 dark:text-gray-100">edit delete</td>
+                                    <td className="px-4 py-3 dark:text-gray-100 flex items-center gap-x-2"><EditBtn/> <DeleteBtn/></td>
                                 </tr>
                             ))}
                         </tbody>

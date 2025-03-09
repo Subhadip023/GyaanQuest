@@ -1,18 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Head, Link, usePage, useForm } from "@inertiajs/react";
-import { TfiMenu } from "react-icons/tfi";
-import { router } from "@inertiajs/react";
-
-
+import { Head, Link, usePage } from "@inertiajs/react";
 import DarkModeBtn from "@/Components/DarkModeBtn";
 import UserDetails from "@/Components/UserDetails";
-import CollabsableDiv from "../Pages/Admin/Partials/CollabsableDiv";
-import SideBarLink from "../Pages/Admin/Partials/SideBarLink";
 import logo from "../../../public/images/image.png";
 import { ToastContainer, toast } from 'react-toastify';
 import Loader from "@/Components/Loader";
 import AdminSideBar from "@/Components/AdminSideBar";
-
 
 function AdminLayout({
     title = "Admin",
@@ -21,7 +14,7 @@ function AdminLayout({
     showHeading = true,
     showBgBox = true,
     serachBoxPlaceHolder = "Search...",
-    searchFunction =(value)=>{console.log(value)},
+    searchFunction =(value)=>{value&&console.log(value)},
     loading=false,
 }) {
     const [isSideBarOpen, setIsSideBarOpen] = useState(true);
@@ -104,9 +97,9 @@ function AdminLayout({
                             >
                                 <path
                                     stroke="currentColor"
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
                                     d="M1 1h15M1 7h15M1 13h15"
                                 />
                             </svg>
@@ -127,9 +120,9 @@ function AdminLayout({
                         >
                             <path
                                 stroke="currentColor"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
                                 d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
                             />
                         </svg>
@@ -146,9 +139,9 @@ function AdminLayout({
                             >
                                 <path
                                     stroke="currentColor"
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth="2"
                                     d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
                                 />
                             </svg>
@@ -172,7 +165,7 @@ function AdminLayout({
 
            <AdminSideBar isSideBarOpen={isSideBarOpen}/>
             <main
-                className={`bg-slate-100 dark:bg-slate-700 dark:text-white overflow-y-auto scrollbar h-[89vh] p-5 ${isSideBarOpen ? "md:ml-64" : "ml-0"
+                className={`bg-slate-100 dark:bg-slate-700 dark:text-white overflow-y-auto scrollbar h-[88vh] p-5 ${isSideBarOpen ? "md:ml-64" : "ml-0"
                     }`}
             >
                 {showHeading && <div
@@ -183,7 +176,7 @@ function AdminLayout({
                         {heading}</div>
 
                 </div>}
-                <div className={`${showBgBox ? 'bg-white p-5 dark:bg-gray-800 dark:text-white  shadow-lg min-h-28 h-fit' : ''}`}>
+                <div className={`${showBgBox ? 'bg-white p-5 dark:bg-gray-800 dark:text-white  shadow-lg min-h-24 h-fit' : ''}`}>
                     <ToastContainer position="top-right" autoClose={5000} />
 
                     {children}
