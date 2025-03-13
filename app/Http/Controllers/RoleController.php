@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use Illuminate\Support\Facades\Redirect;
+
 
 
 
@@ -14,11 +16,27 @@ class RoleController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        // dd($request->input('perpage'));
+        $paginatePage=$request->input('perpage')??10;
+        $roles = Role::with('permissions')->latest()->paginate($paginatePage);
+        $search = $request->input('search');
 
+        $roles = Role::with('permissions')
+        ->when($search, function ($query, $search) {
+            return $query->where('name', 'like', "%{$search}%");
+        })
+        ->latest()
+        ->paginate($paginatePage)
+        ->appends(['search' => $search]);
         
-        $roles = Role::with('permissions')->latest()->get();
+        if($request->input('search')==null){
+            $roles = Role::with('permissions') ->latest()->paginate($paginatePage);
+        }
+
+
+
         $permissions = Permission::pluck('name')->toArray();
         return Inertia::render('Admin/Roles/Index', [
             'roles' => $roles,
@@ -37,15 +55,15 @@ class RoleController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    { $valData = $request->validate([
+    { 
+         // Validate input
+        $valData = $request->validate([
         'name' => 'required|string|max:255|unique:roles,name',
         'permissions' => 'nullable|array', 
         'permissions.*' => 'exists:permissions,name', 
     ]);
         try {
-            // Validate input
            
-    
             // Create the role
             $role = Role::create(['name' => $valData['name']]);
     
@@ -54,7 +72,7 @@ class RoleController extends Controller
                 $role->givePermissionTo($valData['permissions']);
             }
     
-            return redirect('/roles');
+            return Redirect::route('roles.index')->with('success','Role Created successfuly');
     
         } catch (\Exception $e) {
     
@@ -89,9 +107,15 @@ class RoleController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Role $role)
     {
-        //
+        if ($role->name === 'Admin') {
+            return redirect()->back()->with('error', 'Cannot delete Admin role.');
+        }
+    
+        $role->delete();
+        return redirect()->route('roles.index')->with('success', 'Role deleted successfully.');
     }
+    
     
 }

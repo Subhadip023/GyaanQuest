@@ -4,31 +4,48 @@ import Modal from "@/Components/Modal";
 import TextInput from "@/Components/TextInput";
 import ScButton from "@/Components/ScButton";
 import AdminLayout from "@/Layouts/AdminLayout";
-import { useForm } from "@inertiajs/react";
-import React, { useState } from "react";
+import { Link, useForm } from "@inertiajs/react";
+import React, { useEffect, useState } from "react";
 import Highlighter from "react-highlight-words";
 import EditBtn from "@/Components/EditBtn";
 import DeleteBtn from "@/Components/DeleteBtn";
-
-
+import { router } from "@inertiajs/react";
 
 
 function Index({ roles, permissions }) {
+
+    const perPage = roles.per_page || 10;
     const [openModal, setOpenModal] = useState(false);
     const [openPermissionModal, setOpenPermissionModal] = useState(false);
     const [searchRole, setSearchRole] = useState(null);
-    const [filterRoles, setFilterRoles] = useState(roles);
-    const [selectNumbers, setSelectNumbers] = useState("all");
+    const [filterRoles, setFilterRoles] = useState([]);
+    const [selectNumbers, setSelectNumbers] = useState(perPage);
     const [isLoading, setIsLoading] = useState(false);
+    const [openEditRoleModal, setOpenEditRoleModal] = useState(false);
+
+
+    console.log(roles)
+
+
+
     const createRoleForm = useForm('createRoleForm', {
         name: null,
         permissions: []
     });
-    const createPermissionForm = useForm('createPermissionForm', {
+    const paginageRoleForm = useForm()
+    const createPermissionForm = useForm(' ', {
         name: null
     });
+    const editRoleForm = useForm({
+        id: null,
+        name: null,
+        permissions: []
+    })
+    const deleteRoleForm = useForm();
 
-    const lastrow = filterRoles.length - 1;
+    useEffect(() => {
+        setFilterRoles(roles.data);
+    }, [roles])
 
     const submitAddRoleForm = (e) => {
 
@@ -40,10 +57,6 @@ function Index({ roles, permissions }) {
                 createRoleForm.reset();
                 setOpenModal(false);
                 setIsLoading(false);
-                setFilterRoles(roles)
-
-                console.log(roles);
-
             },
             onError: () => {
                 setOpenModal(true)
@@ -61,7 +74,6 @@ function Index({ roles, permissions }) {
             onSuccess: () => {
                 createPermissionForm.reset();
                 setOpenPermissionModal(false);
-                setFilterRoles(roles);
             },
             onError: (errors) => {
                 setOpenPermissionModal(true);
@@ -72,38 +84,72 @@ function Index({ roles, permissions }) {
 
     };
 
+    // const handleSearchRoles = (value) => {
+    //     setSearchRole(value);
+
+    //     if (!value) {
+    //         setFilterRoles(roles.data);
+    //         return;
+    //     }
+
+    //     setFilterRoles(
+    //         roles.data.filter((role) =>
+    //             role.name.toLowerCase().includes(value.toLowerCase()) ||
+    //             role.permissions.some((permission) =>
+    //                 permission.name.toLowerCase().includes(value.toLowerCase())
+    //             )
+    //         )
+    //     );
+    // };
+
     const handleSearchRoles = (value) => {
         setSearchRole(value);
-
-        if (!value) {
-            setFilterRoles(roles);
-            return;
+        if (value !== null) {
+            router.get(route("roles.index"), { search: value, perpage: perPage }, { preserveState: true });
         }
 
-        setFilterRoles(
-            roles.filter((role) =>
-                role.name.toLowerCase().includes(value.toLowerCase()) || // Search by role name
-                role.permissions.some((permission) =>
-                    permission.name.toLowerCase().includes(value.toLowerCase()) // Search by permission name
-                )
-            )
-        );
     };
+
+
+
+
     const handleDisplayChange = (e) => {
-        const value = e.target.value;
-        setSelectNumbers(value);  // Store selected value
-
-        if (value !== "all") {
-            setFilterRoles(roles.slice(0, Number(value))); // Use slice instead of splice
-        } else {
-            setFilterRoles(roles); // Show all roles when "all" is selected
-        }
+        const value = Number(e.target.value);
+        setSelectNumbers(value);
+        paginageRoleForm.get(route('roles.index', { perpage: value }));
     };
 
+    const handleEditRoleForm = (id) => {
+        const editRole = filterRoles.find((role) => role.id == id)
+        editRoleForm.setData('id', id);
+        editRoleForm.setData('name', editRole.name)
 
+        setOpenEditRoleModal(true);
+    }
 
+    const handleDeleteRoleForm = (id) => {
+        setIsLoading(true);
+
+        deleteRoleForm.delete(route('roles.destroy', { id }), {
+            preserveScroll: true,
+            onSuccess: () => {
+                setIsLoading(false);
+            },
+            onError: () => {
+                setIsLoading(false);
+            }
+        });
+    };
+
+    const closeEditRoleModal = () => {
+        setOpenEditRoleModal(false);
+    }
+    const showOpenModal = () => {
+
+    }
 
     return (
+
         <AdminLayout title="Role" heading="Roles" loading={isLoading} searchFunction={handleSearchRoles} serachBoxPlaceHolder="Search by role or permiission name">
 
             {/* Modal for Creating Roles */}
@@ -206,6 +252,72 @@ function Index({ roles, permissions }) {
                 </div>
             </Modal>
 
+            {/* Modal for Edit Role */}
+
+            <Modal show={openEditRoleModal} onClose={closeEditRoleModal}>
+                <div className="p-5 dark:text-white">
+                    <form >
+                        <div className="w-4/5 p-5 flex flex-col items-center justify-center mx-auto">
+                            {/* Role Name Input */}
+                            <div className="mb-6 w-full">
+                                <InputLabel value="Enter Role Name" />
+                                <TextInput
+                                    name="name"
+                                    className="w-full"
+                                    value={editRoleForm.data.name}
+                                    onChange={(e) => editRoleForm.setData('name', e.target.value)}
+                                />
+                                {editRoleForm.errors.name && <InputError message={editRoleForm.errors.name} />}
+                            </div>
+
+                            {/* Permissions Checkboxes */}
+                            <div className="mb-6 w-full">
+                                <InputLabel value="Assign Permissions" />
+                                <div className="grid grid-cols-2 gap-2 mt-2">
+                                    {permissions.map((permission, index) => (
+                                        <label key={index} className="flex items-center space-x-2">
+                                            <input
+                                                type="checkbox"
+                                                value={permission}
+                                                checked={editRoleForm.data.permissions.includes(permission)}
+                                                onChange={(e) => {
+                                                    const selectedPermissions = editRoleForm.data.permissions.includes(permission)
+                                                        ? editRoleForm.data.permissions.filter((p) => p !== permission)
+                                                        : [...editRoleForm.data.permissions, permission];
+
+                                                    editRoleForm.setData('permissions', selectedPermissions);
+                                                }}
+                                            />
+                                            <span className="text-gray-700 dark:text-gray-400">{permission}</span>
+                                        </label>
+                                    ))}
+                                </div>
+                                {editRoleForm.errors.permissions && <InputError message={editRoleForm.errors.permissions} />}
+                            </div>
+                        </div>
+
+                        {/* Buttons */}
+                        <div className="w-full p-5 flex items-center gap-x-2 justify-end">
+                            <ScButton
+                                onClick={(e) => { e.preventDefault(); closeEditRoleModal() }}
+                                btnType="secondary"
+                                disabled={editRoleForm.processing}
+                            >
+                                Close
+                            </ScButton>
+
+                            <ScButton
+                                disabled={editRoleForm.processing}
+                                type="submit"
+                                btnType="success"
+                            >
+                                {editRoleForm.processing ? "Creating Role ..." : "Create Role"}
+                            </ScButton>
+                        </div>
+                    </form>
+                </div>
+            </Modal>
+
 
 
 
@@ -219,7 +331,7 @@ function Index({ roles, permissions }) {
                             <option value="20">20</option>
                             <option value="50">50</option>
 
-                            <option value="all">All</option>
+                            <option value={roles.total}>All</option>
 
 
                         </select>records per page </div>
@@ -258,8 +370,8 @@ function Index({ roles, permissions }) {
                             </tr>
                         </thead>
                         <tbody>
-                            {filterRoles.length == 0 ? <div className="text-red-500  font-bold w-full  my-5">No Role Present </div> : filterRoles.map((role, index) => (
-                                <tr key={role.id || index} className={`${index == lastrow ? "" : 'border-b-2 border-gray-300'}`}>
+                            {filterRoles.length == 0 ? <div className="text-red-500  font-bold w-full  my-5">No Role found on {searchRole} </div> : filterRoles.map((role, index) => (
+                                <tr key={role.id || index} className={`${index == filterRoles.length - 1 ? "" : 'border-b-2 border-gray-300'}`}>
                                     <td className="px-4 py-3 dark:text-gray-100">{index + 1}</td>
                                     <td className="px-4 py-3 dark:text-gray-100">
 
@@ -279,21 +391,36 @@ function Index({ roles, permissions }) {
                                         />
 
                                     }</td>
-                                    <td className="px-4 py-3 dark:text-gray-100 flex items-center gap-x-2"><EditBtn/> <DeleteBtn/></td>
+                                    <td className="px-4 py-3 dark:text-gray-100 flex items-center gap-x-2">
+                                        <EditBtn onClick={() => handleEditRoleForm(role.id)} />
+                                        <DeleteBtn onClick={() => handleDeleteRoleForm(role.id)} />
+                                    </td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
                 </div>
-                <div className=" w-full flex items-center justify-center gap-x-1">
-                    <button className="px-5 py-2 bg-blue-700 hover:bg-blue-500 text-white ">{"<<Previous"}</button>
+                <nav aria-label="Pagination" className="mt-10 flex">
+                    <ul className="inline-flex -space-x-px text-sm mx-auto">
+                        {roles.links.map((link, index) => (
+                            <li key={index}>
+                                <Link
+                                    href={link.url ? `${link.url}${link.url.includes("?") ? "&" : "?"}perpage=${perPage}` : "#"}
 
-                    <button className="p-2 border border-blue-700">1</button>
-
-                    <button className="px-5 py-2 bg-blue-700 hover:bg-blue-500 text-white">{"Next>>"}</button>
-                </div>
+                                    className={`flex items-center justify-center px-3 h-8 border ${link.active
+                                        ? "text-blue-600 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:bg-gray-700 dark:text-white"
+                                        : "text-gray-500 bg-white hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                                        } ${!link.url ? "cursor-not-allowed opacity-50" : ""}`}
+                                >
+                                    <span dangerouslySetInnerHTML={{ __html: link.label }} />
+                                </Link>
+                            </li>
+                        ))}
+                    </ul>
+                </nav>
             </section>
         </AdminLayout>
+
     );
 }
 

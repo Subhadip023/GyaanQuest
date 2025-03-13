@@ -60,7 +60,6 @@ function AdminLayout({
         {loading&&<Loader/>}
             <Head title={title} />
 
-
             <nav className="bg-white border-gray-200 dark:bg-gray-800 border-b-2 py-1 min-h-fit h-18">
                 <div className="w-full flex flex-wrap items-center justify-between mx-auto p-4">
                     <div className="flex gap-x-5 items-center ml-5">
@@ -176,7 +175,7 @@ function AdminLayout({
                         {heading}</div>
 
                 </div>}
-                <div className={`${showBgBox ? 'bg-white p-5 dark:bg-gray-800 dark:text-white  shadow-lg min-h-24 h-fit' : ''}`}>
+                <div className={`${showBgBox ? 'bg-white p-5 dark:bg-gray-800 dark:text-white shadow-lg min-h-24 h-fit' : ''}`}>
                     <ToastContainer position="top-right" autoClose={5000} />
 
                     {children}
