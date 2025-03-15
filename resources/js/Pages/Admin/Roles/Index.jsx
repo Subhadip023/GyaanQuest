@@ -23,16 +23,12 @@ function Index({ roles, permissions }) {
     const [isLoading, setIsLoading] = useState(false);
     const [openEditRoleModal, setOpenEditRoleModal] = useState(false);
 
-
-    console.log(roles)
-
-
-
     const createRoleForm = useForm('createRoleForm', {
         name: null,
         permissions: []
     });
     const paginageRoleForm = useForm()
+
     const createPermissionForm = useForm(' ', {
         name: null
     });
@@ -107,11 +103,7 @@ function Index({ roles, permissions }) {
         if (value !== null) {
             router.get(route("roles.index"), { search: value, perpage: perPage }, { preserveState: true });
         }
-
     };
-
-
-
 
     const handleDisplayChange = (e) => {
         const value = Number(e.target.value);
@@ -123,7 +115,7 @@ function Index({ roles, permissions }) {
         const editRole = filterRoles.find((role) => role.id == id)
         editRoleForm.setData('id', id);
         editRoleForm.setData('name', editRole.name)
-
+        editRoleForm.setData('permissions',[...editRole.permissions.map((p)=>p.name)])
         setOpenEditRoleModal(true);
     }
 
@@ -141,6 +133,22 @@ function Index({ roles, permissions }) {
         });
     };
 
+    const submitEditRoleForm =(e) => {
+        e.preventDefault();
+        console.log(editRoleForm.data)
+        editRoleForm.put(route('roles.update',{id:editRoleForm.data.id}),{
+            preserveScroll: true,
+            onSuccess: () => {
+                editRoleForm.reset();
+                setOpenEditRoleModal(false);
+            },
+            onError: (errors) => {
+                setOpenEditRoleModal(true);
+                console.error("Validation Errors:", errors);
+            }
+        })
+
+    }
     const closeEditRoleModal = () => {
         setOpenEditRoleModal(false);
     }
@@ -256,7 +264,7 @@ function Index({ roles, permissions }) {
 
             <Modal show={openEditRoleModal} onClose={closeEditRoleModal}>
                 <div className="p-5 dark:text-white">
-                    <form >
+                    <form onSubmit={submitEditRoleForm}>
                         <div className="w-4/5 p-5 flex flex-col items-center justify-center mx-auto">
                             {/* Role Name Input */}
                             <div className="mb-6 w-full">
