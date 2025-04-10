@@ -21,7 +21,7 @@ class RoleController extends Controller
 
     public function index(Request $request)
     {
-        $paginatePage = $request->input('perpage') ?? 10;
+        $paginatePage = $request->input('perpage') ?? 5;
         $search = $request->input('search');
 
         $roles = $this->roleRepo->getAll($paginatePage, $search);

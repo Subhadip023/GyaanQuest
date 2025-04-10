@@ -14,15 +14,15 @@ function AdminLayout({
     showHeading = true,
     showBgBox = true,
     serachBoxPlaceHolder = "Search...",
-    searchFunction =(value)=>{value&&console.log(value)},
-    loading=false,
+    searchFunction = (value) => { value && console.log(value) },
+    loading = false,
 }) {
     const [isSideBarOpen, setIsSideBarOpen] = useState(true);
     const successMessage = usePage().props.flash?.success;
     const errorMessage = usePage().props.flash?.error;
     const [searchValue, setSearchValue] = useState("");
-    
-  
+
+
 
     useEffect(() => {
         if (successMessage) {
@@ -57,7 +57,7 @@ function AdminLayout({
 
     return (
         <>
-        {loading&&<Loader/>}
+            {loading && <Loader />}
             <Head title={title} />
 
             <nav className="bg-white border-gray-200 dark:bg-gray-800 border-b-2 py-1 min-h-fit h-18">
@@ -147,7 +147,7 @@ function AdminLayout({
                             <span className="sr-only">Search icon</span>
                         </div>
                         <input
-                            onChange={(e) =>setSearchValue(e.target.value)}
+                            onChange={(e) => setSearchValue(e.target.value)}
                             type="text"
                             id="search-navbar"
                             className="block w-96 p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
@@ -162,7 +162,7 @@ function AdminLayout({
                 </div>
             </nav>
 
-           <AdminSideBar isSideBarOpen={isSideBarOpen}/>
+            <AdminSideBar isSideBarOpen={isSideBarOpen} />
             <main
                 className={`bg-slate-100 dark:bg-slate-700 dark:text-white overflow-y-auto scrollbar h-[88vh] p-5 ${isSideBarOpen ? "md:ml-64" : "ml-0"
                     }`}
@@ -171,7 +171,10 @@ function AdminLayout({
                     className=" text-blue-700 dark:text-blue-500
                  flex items-center font-bold text-4xl justify-start"
                 >
-                    <div className="flex items-center">  <img src={logo} className="hidden sm:flex w-32" alt="" />
+                    <div className="flex items-center p-5">
+                        
+                          {/* <img src={logo} className="hidden sm:flex w-24" alt="" /> */}
+                        
                         {heading}</div>
 
                 </div>}

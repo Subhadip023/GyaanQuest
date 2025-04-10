@@ -1,6 +1,6 @@
 import React from 'react'
 
-function ScButton({
+function Button({
     className = 'px-5 py-2 flex items-center gap-x-2 text-white rounded-lg',
     btnType = "primary",
     disabled = false,
@@ -28,4 +28,4 @@ function ScButton({
     )
 }
 
-export default ScButton;
+export default Button;

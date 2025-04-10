@@ -1,6 +1,6 @@
 import InputLabel from '@/Components/InputLabel';
 import Modal from '@/Components/Modal'
-import ScButton from '@/Components/ScButton';
+import Button from '@/Components/Button';
 import AdminLayout from '@/Layouts/AdminLayout'
 import { useForm, usePage } from '@inertiajs/react';
 import React, { useState } from 'react'
@@ -68,15 +68,15 @@ function Index({ users = [], roles = [] }) {
 
 
                             <div className="w-full p-5 flex items-center gap-x-2 justify-end">
-                                <ScButton
-                                    
+                                <Button
+
                                     onClick={(e) => { e.preventDefault(); setOpenAddRoleModal(false); }}
                                     btnType='secondary'
 
                                     disabled={createAssignRoleForm.processing}
                                 >
                                     Close
-                                </ScButton>
+                                </Button>
 
                                 <button
                                     disabled={createAssignRoleForm.processing}
