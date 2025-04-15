@@ -47,4 +47,17 @@ class User extends Authenticatable implements MustVerifyEmail
             'password' => 'hashed',
         ];
     }
+
+      // Relationships
+      public function scores()
+      {
+          return $this->hasMany(Score::class);
+      }
+  
+      public function quizzes()
+      {
+          return $this->belongsToMany(Quize::class, 'scores')
+                      ->withPivot('score')
+                      ->withTimestamps();
+      }
 }
