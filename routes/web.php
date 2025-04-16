@@ -8,13 +8,7 @@ use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-
-use Illuminate\Support\Facades\Log;
-
-use Illuminate\Support\Facades\URL;
-use Illuminate\Support\Carbon;
-use App\Models\User;
-
+use App\Http\Controllers\ArtisanCommandController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -55,6 +49,10 @@ Route::resource('permissions', PermissionController::class);
 Route::resource('users',UserController::class);
 
 Route::post('/assignRole',assignRoles::class)->name('assign-role');
+
+
+
+Route::post('/run-artisan', ArtisanCommandController::class);
 
 
 
