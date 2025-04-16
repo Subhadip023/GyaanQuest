@@ -23,7 +23,7 @@ services:
       php artisan view:clear
       php artisan config:cache
       php artisan optimize:clear
-      php artisan migrate --force
+      php artisan migrate
     startCommand: |
       php-fpm -D && nginx -g "daemon off;"
     plan: free
