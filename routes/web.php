@@ -51,10 +51,4 @@ Route::resource('users',UserController::class);
 Route::post('/assignRole',assignRoles::class)->name('assign-role');
 
 
-
-Route::post('/run-artisan', ArtisanCommandController::class);
-
-
-
-
 require __DIR__ . '/auth.php';
