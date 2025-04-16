@@ -9,6 +9,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\ArtisanCommandController;
+use App\Http\Controllers\QuizeController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -49,6 +50,6 @@ Route::resource('permissions', PermissionController::class);
 Route::resource('users',UserController::class);
 
 Route::post('/assignRole',assignRoles::class)->name('assign-role');
-
+Route::resource('quizes',QuizeController::class);
 
 require __DIR__ . '/auth.php';

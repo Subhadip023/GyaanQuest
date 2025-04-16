@@ -6,15 +6,23 @@ use App\Models\Quize;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreQuizeRequest;
 use App\Http\Requests\UpdateQuizeRequest;
+use App\Repositories\Interfaces\QuizeRepositoryInterface;
+use Inertia\Inertia;
+use PHPUnit\Framework\MockObject\Stub\ReturnStub;
 
 class QuizeController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    protected $quize_repo;
+
+    public function __construct(QuizeRepositoryInterface $quize_repository) {
+        $this->quize_repo = $quize_repository;
+    }
+
+
     public function index()
-    {
-        //
+    {   
+        $quizes=$this->quize_repo->getAll();
+        return Inertia::render('Quizee/Index',['quizes'=>$quizes]);
     }
 
     /**
@@ -30,7 +38,10 @@ class QuizeController extends Controller
      */
     public function store(StoreQuizeRequest $request)
     {
-        //
+        $valData=$request->validated();
+        $valData['user_id']=auth()->id();
+        $this->quize_repo->create($valData);
+        return redirect()->back()->with('success','Quize created succesfully!');
     }
 
     /**

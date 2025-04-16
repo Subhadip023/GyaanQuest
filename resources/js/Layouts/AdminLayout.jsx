@@ -22,8 +22,6 @@ function AdminLayout({
     const errorMessage = usePage().props.flash?.error;
     const [searchValue, setSearchValue] = useState("");
 
-
-
     useEffect(() => {
         if (successMessage) {
             toast.success(successMessage, {
@@ -180,7 +178,6 @@ function AdminLayout({
                 </div>}
                 <div className={`${showBgBox ? 'bg-white p-5 dark:bg-gray-800 dark:text-white shadow-lg min-h-24 h-fit' : ''}`}>
                     <ToastContainer position="top-right" autoClose={5000} />
-
                     {children}
                 </div>
             </main>

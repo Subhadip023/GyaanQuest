@@ -15,8 +15,7 @@ import PaginationSelector from "@/Components/PaginationSelector";
 import Table from "@/Components/Table/Table";
 import TableRow from "@/Components/Table/TableRow";
 import TableData from "@/Components/Table/TableData";
-
-
+import Pluse from "@/Components/Svgs/Pluse";
 function Index({ roles, permissions }) {
 
     const perPage = roles.per_page || 10;
@@ -303,9 +302,6 @@ function Index({ roles, permissions }) {
                 </div>
             </Modal>
 
-
-
-
             <section className="text-gray-600 dark:text-white body-font py-2 w-full">
                 <div className="w-full flex items-center justify-between mb-5">
 
@@ -315,20 +311,15 @@ function Index({ roles, permissions }) {
                             onClick={() => setOpenModal(true)}
                             btnType="primary"
                         >
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-plus-lg" viewBox="0 0 16 16">
-                                <path fillRule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2" />
-                            </svg> Role
+                            <Pluse/> Role
 
                         </Button>
                         <Button
                             onClick={() => setOpenPermissionModal(true)}
                             btnType="primary"
                             disabled={createPermissionForm.processing}
-
                         >
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-plus-lg" viewBox="0 0 16 16">
-                                <path fillRule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2" />
-                            </svg> Permission
+                            <Pluse/> Permission
                         </Button>
                     </div>
                 </div>
