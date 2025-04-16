@@ -10,16 +10,16 @@ export default defineConfig(({ command, mode }) => ({
         }),
         react(),
     ],
-    // server: {
-    //     host: '0.0.0.0', // Required for Render
-    //     port: 5173, // Default Vite port
-    //     strictPort: true,
-    //     https: mode === 'production' ? true : false, // Ensure this doesn't cause issues in dev
-    // },
-    // build: {
-    //     outDir: 'public/build', // Correct output path for Laravel
-    //     emptyOutDir: true, // Clears old files before building
-    //     // manifest: true, // Ensure Laravel can find Vite assets
-    // },
+    server: {
+        host: '0.0.0.0', // Required for Render
+        port: 5173, // Default Vite port
+        strictPort: true,
+        https: mode === 'production' ? true : false, // Ensure this doesn't cause issues in dev
+    },
+    build: {
+        outDir: 'public/build', // Correct output path for Laravel
+        emptyOutDir: true, // Clears old files before building
+        // manifest: true, // Ensure Laravel can find Vite assets
+    },
 }
 ));
