@@ -21,8 +21,11 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
-# composer.lock
+composer.lock
 
 Dockerfile
 render.yaml
+vite.config.js
+vite.config.js
+vite.config copy.js
 vite.config.js

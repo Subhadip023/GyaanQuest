@@ -11,7 +11,7 @@ export default function AuthenticatedLayout({ header, children }) {
     const user = usePage().props.auth.user;
     const successMessage = usePage().props.flash?.success;
     const errorMessage = usePage().props.flash?.error;
-    
+
     useEffect(() => {
         if (successMessage) {
             toast.success(successMessage, {
