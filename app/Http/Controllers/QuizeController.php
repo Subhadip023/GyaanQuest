@@ -37,12 +37,18 @@ class QuizeController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(StoreQuizeRequest $request)
-    {
-        $valData=$request->validated();
-        $valData['user_id']=auth()->id();
+{
+    try {
+        $valData = $request->validated();
+        $valData['user_id'] = auth()->id();
         $this->quize_repo->create($valData);
-        return redirect()->back()->with('success','Quize created succesfully!');
+
+        return redirect()->back()->with('success', 'Quiz created successfully!');
+    } catch (\Exception $e) {
+        return redirect()->back()->with('error', 'Failed to create quiz. ' . $e->getMessage());
     }
+}
+
 
     /**
      * Display the specified resource.
@@ -64,15 +70,34 @@ class QuizeController extends Controller
      * Update the specified resource in storage.
      */
     public function update(UpdateQuizeRequest $request, Quize $quize)
-    {
-        //
+{
+    try {
+        $this->authorize('update', $quize);
+
+        $valData = $request->validated();
+        $this->quize_repo->update($quize->id, $valData);
+
+        return redirect()->back()->with('success', 'Quiz updated successfully!');
+    } catch (\Exception $e) {
+        return redirect()->back()->with('error', 'Failed to update quiz. ' . $e->getMessage());
     }
+}
+
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(Quize $quize)
     {
-        //
+        try {
+            $this->authorize('delete', $quize);
+    
+            $this->quize_repo->delete($quize->id);
+    
+            return redirect()->back()->with('success', 'Quiz deleted successfully!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Failed to delete quiz. ' . $e->getMessage());
+        }
     }
+    
 }

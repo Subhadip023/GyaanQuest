@@ -25,6 +25,7 @@ class StoreQuizeRequest extends FormRequest
             ],
             'description' => ['nullable', 'string'],
             'display' => ['required', Rule::in(['public', 'private', 'room'])],
+            'active' => 'required | boolean'
         ];
     }
 }

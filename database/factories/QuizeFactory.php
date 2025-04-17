@@ -17,7 +17,12 @@ class QuizeFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            "name" => $this->faker->sentence(4),
+            'description' => $this->faker->paragraph,
+            'user_id' => 2,
+            'display' => $this->faker->randomElement(['public', 'private', 'room']),
+            'active' => $this->faker->boolean(50), // 50 -50 
+
         ];
     }
 }

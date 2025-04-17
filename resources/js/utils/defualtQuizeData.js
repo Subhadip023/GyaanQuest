@@ -3,5 +3,6 @@ export default {
     name:null,
     description:"",
     user_id:null,
-    display:'public'
+    display:'public',
+    active:true
 }

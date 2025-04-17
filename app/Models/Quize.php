@@ -10,7 +10,7 @@ class Quize extends Model
     /** @use HasFactory<\Database\Factories\QuizeFactory> */
     use HasFactory;
 
-    protected $fillable =['name','description','user_id','display'];
+    protected $fillable =['name','description','user_id','display','active'];
 
     public function question(){
         $this->hasMany(Question::class);

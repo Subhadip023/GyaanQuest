@@ -37,7 +37,7 @@ class QuizePolicy
      */
     public function update(User $user, Quize $quize): bool
     {
-        return false;
+        return $user->id==$quize->user_id;
     }
 
     /**
@@ -45,7 +45,7 @@ class QuizePolicy
      */
     public function delete(User $user, Quize $quize): bool
     {
-        return false;
+        return $user->id==$quize->user_id;
     }
 
     /**

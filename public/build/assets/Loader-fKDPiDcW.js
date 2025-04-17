@@ -1,0 +1,1 @@
+import{j as e}from"./app-a17V35Ex.js";function r(){return e.jsxs("div",{className:"fixed w-screen h-screen bg-white/80  z-50 flex flex-col gap-y-2 items-center justify-center",children:[e.jsx("div",{className:"loader"}),e.jsx("div",{className:"loader2"})]})}export{r as L};

@@ -9,7 +9,7 @@ class QuizeRepository implements QuizeRepositoryInterface
 {
     public function getAll()
     {
-        return Quize::all();
+        return Quize::latest('created_at')->get();
     }
 
     public function create(array $data)
