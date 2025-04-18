@@ -170,9 +170,9 @@ function AdminLayout({
                  flex items-center font-bold text-4xl justify-start"
                 >
                     <div className="flex items-center p-5">
-                        
-                          {/* <img src={logo} className="hidden sm:flex w-24" alt="" /> */}
-                        
+
+                        {/* <img src={logo} className="hidden sm:flex w-24" alt="" /> */}
+
                         {heading}</div>
 
                 </div>}

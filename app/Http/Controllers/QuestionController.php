@@ -6,15 +6,26 @@ use App\Models\Question;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreQuestionRequest;
 use App\Http\Requests\UpdateQuestionRequest;
+use App\Repositories\Interfaces\QuestionRepositoryInterface;
+use App\Repositories\Interfaces\QuizeRepositoryInterface;
+use Inertia\Inertia;
 
 class QuestionController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    protected $question_repo;
+    protected $quize_repo;
+    public function __construct(QuestionRepositoryInterface $question_repository, QuizeRepositoryInterface $quize_repository)
+    {
+        $this->question_repo = $question_repository;
+        $this->quize_repo = $quize_repository;
+    }
+
     public function index()
     {
-        //
+        $this->authorize('viewAny', Question::class);
+        $questions = $this->question_repo->getAll();
+        $quizes = $this->quize_repo->getAll();
+        return Inertia::render('Questions/Index', compact('questions', 'quizes'));
     }
 
     /**
@@ -30,7 +41,15 @@ class QuestionController extends Controller
      */
     public function store(StoreQuestionRequest $request)
     {
-        //
+        $this->authorize('create', Question::class);
+        try {
+            $valData = $request->validated();
+            $valData['user_id'] = auth()->id();
+            $this->question_repo->create($valData);
+            return redirect()->back()->with('success', 'Question created successfully');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Something went wrong');
+        }
     }
 
     /**
@@ -52,9 +71,17 @@ class QuestionController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateQuestionRequest $request, Question $question)
-    {
-        //
+    public function update(UpdateQuestionRequest $request,Question $question)
+    {        
+        $this->authorize('update',$question);
+        
+        try {
+            $valData = $request->validated();
+            $this->question_repo->update($question->id, $valData);
+            return redirect()->back()->with('success', 'Question updated successfully');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Something went wrong');
+        }
     }
 
     /**
@@ -62,6 +89,13 @@ class QuestionController extends Controller
      */
     public function destroy(Question $question)
     {
-        //
+        $this->authorize('delete', $question);
+        try {
+            $this->question_repo->delete($question->id);
+            return redirect()->back()->with('success', 'Question deleted successfully');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Something went wrong');
+        }
     }
+
 }

@@ -102,7 +102,7 @@ function Index({ quizes }) {
         <div className="w-full p-5">
           <form onSubmit={openEditQuizeform ? submitEditQuizeForm : submitAddQuizeFrom}>
             <div className="mb-6 w-full">
-              <InputLabel value="Enter Role Name" />
+              <InputLabel value="Enter Quize Name" />
               <TextInput
                 name="name"
                 className="w-full"

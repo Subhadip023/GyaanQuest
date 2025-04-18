@@ -10,9 +10,10 @@ class Quize extends Model
     /** @use HasFactory<\Database\Factories\QuizeFactory> */
     use HasFactory;
 
-    protected $fillable =['name','description','user_id','display','active'];
+    protected $fillable = ['name', 'description', 'user_id', 'display', 'active'];
 
-    public function question(){
+    public function question()
+    {
         $this->hasMany(Question::class);
     }
     public function scores()
@@ -23,9 +24,7 @@ class Quize extends Model
     public function users()
     {
         return $this->belongsToMany(User::class, 'scores')
-                    ->withPivot('score')
-                    ->withTimestamps();
+            ->withPivot('score')
+            ->withTimestamps();
     }
-
-
 }

@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -19,7 +20,7 @@ class QuizeFactory extends Factory
         return [
             "name" => $this->faker->sentence(4),
             'description' => $this->faker->paragraph,
-            'user_id' => 2,
+            'user_id' => User::factory(),
             'display' => $this->faker->randomElement(['public', 'private', 'room']),
             'active' => $this->faker->boolean(50), // 50 -50 
 

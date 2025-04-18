@@ -6,15 +6,14 @@ use App\Models\Answare;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreAnswareRequest;
 use App\Http\Requests\UpdateAnswareRequest;
+use Inertia\Inertia;
 
 class AnswareController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+   
     public function index()
     {
-        //
+        return Inertia::render('Answare/Index');
     }
 
     /**

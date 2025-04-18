@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AnswareController;
 use App\Http\Controllers\assignRoles;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfileController;
@@ -9,7 +10,9 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\ArtisanCommandController;
+use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\QuizeController;
+use App\Models\Question;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -50,6 +53,8 @@ Route::resource('permissions', PermissionController::class);
 Route::resource('users',UserController::class);
 
 Route::post('/assignRole',assignRoles::class)->name('assign-role');
-Route::resource('quizes',QuizeController::class);
+Route::resource('quizes',QuizeController::class)->middleware('auth');
+Route::resource('questions',QuestionController::class)->middleware('auth');
+Route::resource('answers',AnswareController::class)->middleware('auth');
 
 require __DIR__ . '/auth.php';

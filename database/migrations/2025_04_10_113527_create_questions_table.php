@@ -18,6 +18,7 @@ return new class extends Migration
             $table->text('question');
             $table->enum('type',['mcq','true_false','saq','long'])->default('mcq');
             $table->foreignId('quizes_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->decimal('number', 5, 2)->default(1);
             $table->boolean('isActive')->default(true);
             $table->enum('display',['public','private','room'])->default('public');

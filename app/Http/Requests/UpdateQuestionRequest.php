@@ -11,7 +11,7 @@ class UpdateQuestionRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,13 @@ class UpdateQuestionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'question' => ['required', 'string'],
+            'type' => ['required', 'in:mcq,true_false,saq,long'],
+            'quizes_id' => ['required', 'exists:quizes,id'],
+            'user_id' => ['required', 'exists:users,id'],
+            'number' => ['required', 'numeric', 'between:0,999.99'],
+            'isActive' => ['required', 'boolean'],
+            'display' => ['required', 'in:public,private,room'],
         ];
     }
 }
