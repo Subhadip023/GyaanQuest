@@ -3,10 +3,10 @@
 namespace App\Policies;
 
 use Illuminate\Auth\Access\Response;
-use App\Models\Quize;
+use App\Models\Quiz;
 use App\Models\User;
 
-class QuizePolicy
+class QuizPolicy
 {
     /**
      * Determine whether the user can view any models.
@@ -19,7 +19,7 @@ class QuizePolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Quize $quize): bool
+    public function view(User $user, Quiz $quize): bool
     {
         return false;
     }
@@ -35,23 +35,23 @@ class QuizePolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Quize $quize): bool
+    public function update(User $user, Quiz $quize): bool
     {
-        return $user->id==$quize->user_id;
+        return $user->id == $quize->user_id;
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Quize $quize): bool
+    public function delete(User $user, Quiz $quize): bool
     {
-        return $user->id==$quize->user_id;
+        return $user->id == $quize->user_id;
     }
 
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, Quize $quize): bool
+    public function restore(User $user, Quiz $quize): bool
     {
         return false;
     }
@@ -59,7 +59,7 @@ class QuizePolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, Quize $quize): bool
+    public function forceDelete(User $user, Quiz $quize): bool
     {
         return false;
     }

@@ -16,12 +16,12 @@ return new class extends Migration
         Schema::create('questions', function (Blueprint $table) {
             $table->id();
             $table->text('question');
-            $table->enum('type',['mcq','true_false','saq','long'])->default('mcq');
-            $table->foreignId('quizes_id')->constrained()->onDelete('cascade');
+            $table->enum('type', ['mcq', 'true_false', 'saq', 'long'])->default('mcq');
+            $table->foreignId('quiz_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->decimal('number', 5, 2)->default(1);
             $table->boolean('isActive')->default(true);
-            $table->enum('display',['public','private','room'])->default('public');
+            $table->enum('display', ['public', 'private', 'room'])->default('public');
             $table->timestamps();
         });
     }

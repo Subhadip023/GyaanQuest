@@ -2,19 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Quize;
+use App\Models\Quiz;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreQuizeRequest;
-use App\Http\Requests\UpdateQuizeRequest;
-use App\Repositories\Interfaces\QuizeRepositoryInterface;
+use App\Http\Requests\StoreQuizRequest;
+use App\Http\Requests\UpdateQuizRequest;
+use App\Repositories\Interfaces\QuizRepositoryInterface;
 use Inertia\Inertia;
 use PHPUnit\Framework\MockObject\Stub\ReturnStub;
 
-class QuizeController extends Controller
+class QuizController extends Controller
 {
     protected $quize_repo;
 
-    public function __construct(QuizeRepositoryInterface $quize_repository)
+    public function __construct(QuizRepositoryInterface $quize_repository)
     {
         $this->quize_repo = $quize_repository;
     }
@@ -22,8 +22,8 @@ class QuizeController extends Controller
 
     public function index()
     {
-        $quizes = $this->quize_repo->getAll();
-        return Inertia::render('Quizee/Index', ['quizes' => $quizes]);
+        $quizzes = $this->quize_repo->getAll();
+        return Inertia::render('Quizee/Index', ['quizzes' => $quizzes]);
     }
 
 
@@ -31,7 +31,7 @@ class QuizeController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreQuizeRequest $request)
+    public function store(StoreQuizRequest $request)
     {
         try {
             $valData = $request->validated();
@@ -48,7 +48,7 @@ class QuizeController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Quize $quize)
+    public function show(Quiz $quize)
     {
         //
     }
@@ -58,7 +58,7 @@ class QuizeController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateQuizeRequest $request, Quize $quize)
+    public function update(UpdateQuizRequest $request, Quiz $quize)
     {
         try {
             $this->authorize('update', $quize);
@@ -76,7 +76,7 @@ class QuizeController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Quize $quize)
+    public function destroy(Quiz $quize)
     {
         try {
             $this->authorize('delete', $quize);

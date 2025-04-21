@@ -5,16 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Quize extends Model
+class Quiz extends Model
 {
-    /** @use HasFactory<\Database\Factories\QuizeFactory> */
+    /** @use HasFactory<\Database\Factories\QuizFactory> */
     use HasFactory;
 
     protected $fillable = ['name', 'description', 'user_id', 'display', 'active'];
 
     public function question()
     {
-        $this->hasMany(Question::class);
+        return $this->hasMany(Question::class);
     }
     public function scores()
     {

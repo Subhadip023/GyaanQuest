@@ -13,6 +13,6 @@ class Answare extends Model
     protected $fillable = ['question_id','answare','is_correct','is_long'];
 
     public function question(){
-        $this->hasOne(Question::class);
+       return $this->belongsTo(Question::class);
     }
 }

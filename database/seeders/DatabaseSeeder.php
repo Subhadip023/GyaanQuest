@@ -16,7 +16,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create Admin User
         $user = User::factory()->create([
             'name' => 'Admin',
             'email' => 'admin@example.com',
@@ -46,4 +45,5 @@ class DatabaseSeeder extends Seeder
         // Assign Role to Admin User
         $user->assignRole('admin');
     }
+    
 }

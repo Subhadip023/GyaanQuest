@@ -24,7 +24,7 @@ class UpdateQuestionRequest extends FormRequest
         return [
             'question' => ['required', 'string'],
             'type' => ['required', 'in:mcq,true_false,saq,long'],
-            'quizes_id' => ['required', 'exists:quizes,id'],
+            'quiz_id' => ['required', 'exists:quizzes,id'],
             'user_id' => ['required', 'exists:users,id'],
             'number' => ['required', 'numeric', 'between:0,999.99'],
             'isActive' => ['required', 'boolean'],

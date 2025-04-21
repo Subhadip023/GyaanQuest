@@ -2,31 +2,31 @@
 
 namespace App\Repositories;
 
-use App\Models\Quize;
-use App\Repositories\Interfaces\QuizeRepositoryInterface;
+use App\Models\Quiz;
+use App\Repositories\Interfaces\QuizRepositoryInterface;
 
-class QuizeRepository implements QuizeRepositoryInterface
+class QuizRepository implements QuizRepositoryInterface
 {
     public function getAll()
     {
-        return Quize::latest('created_at')->get();
+        return Quiz::with('question')->latest()->get();
     }
 
     public function create(array $data)
     {
-        return Quize::create($data);
+        return Quiz::create($data);
     }
 
     public function update($id, array $data)
     {
-        $quize = Quize::findOrFail($id);
+        $quize = Quiz::findOrFail($id);
         $quize->update($data);
         return $quize;
     }
 
     public function delete($id)
     {
-        $quize = Quize::findOrFail($id);
+        $quize = Quiz::findOrFail($id);
         $quize->delete();
     }
 }

@@ -17,13 +17,20 @@ import TextArea from '@/Components/TextArea';
 import RadioGroup from '@/Components/RadioGroup';
 import AlertModal from '@/Components/AlertModal';
 import ActionBtns from '@/Components/ActionBtns'
-function Index({ questions, quizes }) {
+import defualtAnswerData from '@/utils/defualtAnswerData'
+import CreateAnswerForm from '@/Components/From/CreateAnswerForm'
+import Checkbox from '@/Components/Checkbox'
+
+function Index({ questions, quizzes }) {
+  console.log(questions)
   const [perpageShow, setPerpageShow] = useState(5);
   const [currentPage, setCurrentPage] = useState(1);
   const [openAddQuestionFrom, setOpenAddQuestionFrom] = useState(false);
   const [openEditQuestionFrom, setOpenEditQuestionFrom] = useState(false);
   const [openDeleteAlertModal, setOpenDeleteAlertModal] = useState(false);
   const [deleteQuestionId, setDeleteQuestionId] = useState(null);
+  const [openCreateAnswerFrom, setOpenCreateAnswerFrom] = useState(false);
+
 
   const totalItems = questions.length;
   const totalPages = Math.ceil(totalItems / perpageShow);
@@ -33,7 +40,7 @@ function Index({ questions, quizes }) {
   const createQuestionForm = useForm(defualtQuestionData);
   const editQuestionForm = useForm(defualtQuestionData);
   const deleteQuestionForm = useForm();
-  
+  const createAnswerForm = useForm(defualtAnswerData);
   const handleDisplayChange = (e) => {
     const value = Number(e.target.value);
     setPerpageShow(value);
@@ -56,11 +63,9 @@ function Index({ questions, quizes }) {
     })
   }
   const editQuestionfunc = (question) => {
-    console.log(question)
     setOpenEditQuestionFrom(true);
     editQuestionForm.setData({ ...question, isActive: Boolean(question.isActive) });
 
-    console.log(editQuestionForm.data)
   }
 
   const submitEditQuestionForm = (e) => {
@@ -78,8 +83,6 @@ function Index({ questions, quizes }) {
     })
   }
 
-
-
   const openDeleteModal = (id) => {
     setDeleteQuestionId(id);
     setOpenDeleteAlertModal(true)
@@ -96,11 +99,38 @@ function Index({ questions, quizes }) {
       }
     });
   }
+  const creatAnswer = (question) => {
+    setOpenCreateAnswerFrom(true);
+    createAnswerForm.setData('question_id', question.id);
+    createAnswerForm.setData('question_name', question.question);
+    createAnswerForm.setData('question_type', question.type);
+    // createAnswerForm.setData('question_number', question.type);
+
+
+  }
+  // console.log(createAnswerForm.data.answers)
+
+  const handelCreateAnswer = (e) => {
+    e.preventDefault();
+    console.log(createAnswerForm.data)
+    createAnswerForm.post(route('answers.store'), {
+      preserveScroll: true,
+      onSuccess: () => {
+        createAnswerForm.reset();
+        setOpenCreateAnswerFrom(false);
+      },
+      onError: (errors) => {
+        setOpenCreateAnswerFrom(true);
+        console.error("Validation Errors:", errors);
+      }
+    })
+  }
+
 
   return (
     <AdminLayout title='Questions' heading='Questions'>
-      <AlertModal show={openDeleteAlertModal} onClose={() => setOpenDeleteAlertModal(false)} onConfirm={deleteQuestion}/>
-      
+      <AlertModal show={openDeleteAlertModal} onClose={() => setOpenDeleteAlertModal(false)} onConfirm={deleteQuestion} />
+
       <Modal show={openAddQuestionFrom || openEditQuestionFrom} onClose={() => {
         if (!editQuestionForm.processing || !createQuestionForm.processing) {
           setOpenAddQuestionFrom(false);
@@ -162,17 +192,17 @@ function Index({ questions, quizes }) {
                 <div className="mb-6 w-full">
                   <InputLabel value="Select Quiz" />
                   <select
-                    name="quizes_id"
-                    value={openEditQuestionFrom ? editQuestionForm.data.quizes_id : createQuestionForm.data.quizes_id}
+                    name="quiz_id"
+                    value={openEditQuestionFrom ? editQuestionForm.data.quiz_id : createQuestionForm.data.quiz_id}
                     onChange={(e) =>
                       openEditQuestionFrom
-                        ? editQuestionForm.setData('quizes_id', e.target.value)
-                        : createQuestionForm.setData('quizes_id', e.target.value)
+                        ? editQuestionForm.setData('quiz_id', e.target.value)
+                        : createQuestionForm.setData('quiz_id', e.target.value)
                     }
                     className="w-full bg-slate-800 text-white border border-slate-600 rounded-md focus:outline-none focus:ring-0 focus:border-indigo-500"
                   >
                     <option value="">Select a quiz</option>
-                    {quizes.map((quiz) => (
+                    {quizzes.map((quiz) => (
                       <option key={quiz.id} value={quiz.id}>
                         {quiz.name}
                       </option>
@@ -180,13 +210,13 @@ function Index({ questions, quizes }) {
                   </select>
 
                   {(openEditQuestionFrom
-                    ? editQuestionForm.errors.quizes_id
-                    : createQuestionForm.errors.quizes_id) && (
+                    ? editQuestionForm.errors.quiz_id
+                    : createQuestionForm.errors.quiz_id) && (
                       <InputError
                         message={
                           openEditQuestionFrom
-                            ? editQuestionForm.errors.quizes_id
-                            : createQuestionForm.errors.quizes_id
+                            ? editQuestionForm.errors.quiz_id
+                            : createQuestionForm.errors.quiz_id
                         }
                       />
                     )}
@@ -286,6 +316,156 @@ function Index({ questions, quizes }) {
         </div>
       </Modal>
 
+      <Modal show={openCreateAnswerFrom} onClose={() => setOpenCreateAnswerFrom(false)}>
+        <div className="p-5">
+          <div className="w-3/4 mx-auto">
+
+            <form onSubmit={handelCreateAnswer}>
+
+              {createAnswerForm.data?.question_name && (
+                <h2 className="text-lg font-semibold mb-4">
+                  {createAnswerForm.data.question_name}
+                </h2>
+              )}
+
+              {createAnswerForm.data?.question_type === "mcq" && (
+                <section className="grid grid-cols-2 gap-4">
+                  {createAnswerForm.data.answers.map((item, index) => (
+                    <div key={item.id} className='flex flex-col items-center'>
+                      <div key={item.id} className="mb-4">
+                        <InputLabel value={`Option ${index + 1}`} />
+                        <div className="relative w-full">
+                          <TextInput
+                            type="text"
+                            className="w-full pr-10"
+                            value={item.answare}
+                            onChange={(e) => {
+                              const updated = [...createAnswerForm.data.answers];
+                              updated[index].answare = e.target.value;
+                              createAnswerForm.setData("answers", updated);
+                            }}
+                          />
+                          {createAnswerForm.data.answers.length > 2 && <svg
+                            onClick={() => {
+                              const updated = [...createAnswerForm.data.answers];
+                              updated.splice(index, 1);
+                              createAnswerForm.setData("answers", updated);
+                            }}
+                            className="absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer hover:scale-105"
+                            width="20"
+                            height="20"
+                            fill="red"
+                            viewBox="0 0 16 16"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z" />
+                            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />  </svg>}
+                        </div>
+
+                      </div>
+                      <div>
+                        is it correct option  <Checkbox onClick={() => {
+                          const updated = [...createAnswerForm.data.answers];
+                          updated[index].is_correct = !updated[index].is_correct;
+                          createAnswerForm.setData("answers", updated);
+                        }} />
+
+                      </div>
+                    </div>
+                  ))}
+                </section>
+              )}
+
+              {createAnswerForm.data?.question_type === "mcq" && createAnswerForm.data.answers.length < 6 && (
+                <Button btnType='primary'
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (createAnswerForm.data.answers.length < 6) {
+                      createAnswerForm.setData("answers", [
+                        ...createAnswerForm.data.answers,
+                        {
+                          id: createAnswerForm.data.answers.length + 1,
+                          answare: "",
+                          is_correct: false,
+                          is_long: false,
+                        },
+                      ]);
+                    }
+
+                  }}
+                  className='mt-5 p-2 rounded-md'
+                >
+                  + Add Option
+                </Button>
+              )}
+
+              {/* SAQ - Short Answer */}
+              {createAnswerForm.data?.question_type === "saq" && (
+                <div className="mb-4">
+                  <InputLabel value="Answer" />
+                  <TextInput
+                    type="text"
+                    className="w-full"
+                    value={createAnswerForm.data.answers?.[0]?.answare || ""}
+                    onChange={(e) => {
+                      createAnswerForm.setData("answers", [
+                        {
+                          id: 1,
+                          answare: e.target.value,
+                          is_correct: true,
+                          is_long: true,
+                        },
+                      ]);
+                    }}
+                  />
+                </div>
+              )}
+
+              {/* Boolean / True-False */}
+              {createAnswerForm.data?.question_type === "true_false" && (
+                <div className="mb-4">
+                  <InputLabel value="Choose the correct answer" />
+                  <div className="flex gap-4 mt-2">
+                    {["True", "False"].map((option, index) => (
+                      <label key={index} className="flex items-center gap-2">
+                        <input
+                          type="radio"
+                          name="booleanAnswer"
+                          value={option}
+                          checked={
+                            createAnswerForm.data.answers?.[0]?.answare === option
+                          }
+                          onChange={(e) =>
+                            createAnswerForm.setData("answers", [
+                              {
+                                id: 1,
+                                answare: e.target.value,
+                                is_correct: true,
+                                is_long: false,
+                              },
+                            ])
+                          }
+                        />
+                        {option}
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+
+              <div className='flex justify-end gap-2 mt-4'>
+                <Button btnType='secondary' onClick={(e) => { e.preventDefault(); setOpenCreateAnswerFrom(false) }}>Cancel</Button>
+                <Button btnType='success'>Submit</Button>
+              </div>
+            </form>
+
+          </div>
+        </div>
+      </Modal>
+
+
+
       <section>
         <div className='p-5 w-full flex items-center justify-between'>
           <PaginationSelector selectNumber={perpageShow} handleDisplayChange={handleDisplayChange} total={questions.length} />
@@ -293,18 +473,20 @@ function Index({ questions, quizes }) {
         </div>
 
         <div className='mt-5 w-full'>
-          <Table columns={['#', 'Question', 'Number', 'Type', 'Active', 'Display', 'Quize', 'Actions']}>
+          <Table columns={['#', 'Question', 'Answer', 'Number', 'Type', 'Active', 'Display', 'Quiz', 'Actions']}>
             {paginatedQuestions.map((question, index) => (
-              <TableRow key={index||question.id} isLast={index === paginatedQuestions.length - 1}>
+              <TableRow key={index || question.id} isLast={index === paginatedQuestions.length - 1}>
                 <TableData>{startIndex + index + 1}</TableData>
                 <TableData>{question.question}</TableData>
+                <TableData>{question.answers.length == 0 ? <Button onClick={() => creatAnswer(question)}><Pluse /></Button> : question.answer.filter((answer) => answer.is_correct).map((answer) => answer.answare).join(', ')}
+                </TableData>
                 <TableData>{question.number}</TableData>
                 <TableData>{question.type}</TableData>
                 <TableData>{question.isActive ? 'Active' : 'Not active'}</TableData>
                 <TableData>{question.display}</TableData>
                 <TableData>{question.quiz?.name}</TableData>
-                <TableData>            
-                    <ActionBtns editFunction={() => editQuestionfunc(question)} deleteFuntion={() => openDeleteModal(question.id)} />
+                <TableData>
+                  <ActionBtns editFunction={() => editQuestionfunc(question)} deleteFuntion={() => openDeleteModal(question.id)} />
                 </TableData>
               </TableRow>
             ))}

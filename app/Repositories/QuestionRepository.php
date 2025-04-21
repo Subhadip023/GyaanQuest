@@ -9,7 +9,7 @@ class QuestionRepository implements QuestionRepositoryInterface
 {
     public function getAll()
     {
-        return Question::with('quiz')->latest()->get();
+        return Question::with('quiz','answers')->latest()->get();
     }
 
     public function create(array $data)

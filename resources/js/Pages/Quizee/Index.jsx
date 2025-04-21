@@ -6,7 +6,7 @@ import TableRow from '@/Components/Table/TableRow';
 import AdminLayout from '@/Layouts/AdminLayout';
 import { useForm } from '@inertiajs/react';
 import React, { useState } from 'react';
-import defualtQuizeData from '@/utils/defualtQuizeData';
+import defualtQuizData from '@/utils/defualtQuizeData';
 import InputLabel from '@/Components/InputLabel';
 import TextInput from '@/Components/TextInput';
 import InputError from '@/Components/InputError';
@@ -16,28 +16,29 @@ import EditBtn from '@/Components/EditBtn';
 import DeleteBtn from '@/Components/DeleteBtn';
 import AlertModal from '@/Components/AlertModal';
 
-function Index({ quizes }) {
-  const [openAddQuizeModal, setAddQuizeModal] = useState(false);
-  const [openEditQuizeform, setOpenEditQuizeform] = useState(false);
-  const [deleteQuizeId, setDeleteQuizeId] = useState(null);
+function Index({ quizzes }) {
+  const [openAddQuizModal, setAddQuizModal] = useState(false);
+  const [openEditQuizform, setOpenEditQuizform] = useState(false);
+  const [deleteQuizId, setDeleteQuizId] = useState(null);
   const [openAlert, setOpenAlert] = useState(false);
-  const createQuizeForm = useForm(defualtQuizeData);
-  const editQuizeForm = useForm(defualtQuizeData);
-  const deleteQuizeForm = useForm();
+  const createQuizForm = useForm(defualtQuizData);
+  const editQuizForm = useForm(defualtQuizData);
+  const deleteQuizForm = useForm();
 
-  const openEditQuizemodal = (quize) => {
-    editQuizeForm.setData(quize);
-    setOpenEditQuizeform(true);
+  const openEditQuizmodal = (quize) => {
+    editQuizForm.setData(quize);
+    setOpenEditQuizform(true);
   }
+  console.log(quizzes[0])
 
 
-  const submitAddQuizeFrom = (e) => {
+  const submitAddQuizFrom = (e) => {
     e.preventDefault();
 
-    createQuizeForm.post(route('quizes.store'), {
+    createQuizForm.post(route('quizzes.store'), {
       onSuccess: () => {
-        setAddQuizeModal(false);
-        createQuizeForm.reset();
+        setAddQuizModal(false);
+        createQuizForm.reset();
       },
       onError: (errors) => {
         console.error('Validation errors:', errors);
@@ -50,16 +51,16 @@ function Index({ quizes }) {
   };
 
 
-  const submitEditQuizeForm = (e) => {
+  const submitEditQuizForm = (e) => {
     e.preventDefault();
 
-    editQuizeForm.put(
-      route('quizes.update', editQuizeForm.data.id),
+    editQuizForm.put(
+      route('quizzes.update', editQuizForm.data.id),
       {
         preserveScroll: true,
         onSuccess: () => {
-          setOpenEditQuizeform(false);
-          editQuizeForm.reset();
+          setOpenEditQuizform(false);
+          editQuizForm.reset();
         },
         onError: (errors) => {
           console.error('Validation errors:', errors);
@@ -71,8 +72,8 @@ function Index({ quizes }) {
   const submitDeletRoleForm = (e) => {
     e.preventDefault();
 
-    deleteQuizeForm.delete(
-      route('quizes.destroy', deleteQuizeId),
+    deleteQuizForm.delete(
+      route('quizzes.destroy', deleteQuizId),
       {
         preserveScroll: true,
         onSuccess: () => {
@@ -87,40 +88,40 @@ function Index({ quizes }) {
 
 
   return (
-    <AdminLayout title='Quize' heading='Quize'>
+    <AdminLayout title='Quiz' heading='Quiz'>
       <AlertModal show={openAlert} onClose={() => setOpenAlert(false)} onConfirm={submitDeletRoleForm} title="Delete Quiz?"
         message="Are you sure you want to delete this quiz? This action cannot be undone."
       />
       {/* craete + edit  */}
-      <Modal show={openAddQuizeModal || openEditQuizeform} onClose={() => {
-        if (!editQuizeForm.processing || !createQuizeForm.processing) {
-          setAddQuizeModal(false);
-          setOpenEditQuizeform(false);
+      <Modal show={openAddQuizModal || openEditQuizform} onClose={() => {
+        if (!editQuizForm.processing || !createQuizForm.processing) {
+          setAddQuizModal(false);
+          setOpenEditQuizform(false);
         }
 
       }} maxWidth="lg">
         <div className="w-full p-5">
-          <form onSubmit={openEditQuizeform ? submitEditQuizeForm : submitAddQuizeFrom}>
+          <form onSubmit={openEditQuizform ? submitEditQuizForm : submitAddQuizFrom}>
             <div className="mb-6 w-full">
-              <InputLabel value="Enter Quize Name" />
+              <InputLabel value="Enter Quiz Name" />
               <TextInput
                 name="name"
                 className="w-full"
-                value={openEditQuizeform ? editQuizeForm.data.name : createQuizeForm.data.name}
+                value={openEditQuizform ? editQuizForm.data.name : createQuizForm.data.name}
                 onChange={(e) =>
-                  openEditQuizeform
-                    ? editQuizeForm.setData('name', e.target.value)
-                    : createQuizeForm.setData('name', e.target.value)
+                  openEditQuizform
+                    ? editQuizForm.setData('name', e.target.value)
+                    : createQuizForm.setData('name', e.target.value)
                 }
               />
-              {(openEditQuizeform ? editQuizeForm.errors.name : createQuizeForm.errors.name) && (
-                <InputError message={openEditQuizeform ? editQuizeForm.errors.name : createQuizeForm.errors.name} />
+              {(openEditQuizform ? editQuizForm.errors.name : createQuizForm.errors.name) && (
+                <InputError message={openEditQuizform ? editQuizForm.errors.name : createQuizForm.errors.name} />
               )}
             </div>
 
             <div className="mb-6 w-full">
               <InputLabel
-                value={`Enter Quiz Description (${(openEditQuizeform ? editQuizeForm.data.description : createQuizeForm.data.description)
+                value={`Enter Quiz Description (${(openEditQuizform ? editQuizForm.data.description : createQuizForm.data.description)
                   ?.trim()
                   .split(/\s+/)
                   .filter(Boolean).length})`}
@@ -128,15 +129,15 @@ function Index({ quizes }) {
               <TextArea
                 name="description"
                 className="w-full h-32"
-                value={openEditQuizeform ? editQuizeForm.data.description : createQuizeForm.data.description}
+                value={openEditQuizform ? editQuizForm.data.description : createQuizForm.data.description}
                 onChange={(e) =>
-                  openEditQuizeform
-                    ? editQuizeForm.setData('description', e.target.value)
-                    : createQuizeForm.setData('description', e.target.value)
+                  openEditQuizform
+                    ? editQuizForm.setData('description', e.target.value)
+                    : createQuizForm.setData('description', e.target.value)
                 }
               />
-              {(openEditQuizeform ? editQuizeForm.errors.description : createQuizeForm.errors.description) && (
-                <InputError message={openEditQuizeform ? editQuizeForm.errors.description : createQuizeForm.errors.description} />
+              {(openEditQuizform ? editQuizForm.errors.description : createQuizForm.errors.description) && (
+                <InputError message={openEditQuizform ? editQuizForm.errors.description : createQuizForm.errors.description} />
               )}
             </div>
 
@@ -144,11 +145,11 @@ function Index({ quizes }) {
               <InputLabel value="Visibility" />
               <RadioGroup
                 name="display"
-                value={openEditQuizeform ? editQuizeForm.data.display : createQuizeForm.data.display}
+                value={openEditQuizform ? editQuizForm.data.display : createQuizForm.data.display}
                 onChange={(val) =>
-                  openEditQuizeform
-                    ? editQuizeForm.setData('display', val)
-                    : createQuizeForm.setData('display', val)
+                  openEditQuizform
+                    ? editQuizForm.setData('display', val)
+                    : createQuizForm.setData('display', val)
                 }
                 options={[
                   { value: 'public', label: 'Public' },
@@ -157,8 +158,8 @@ function Index({ quizes }) {
                 ]}
                 className="mt-2"
               />
-              {(openEditQuizeform ? editQuizeForm.errors.display : createQuizeForm.errors.display) && (
-                <InputError message={openEditQuizeform ? editQuizeForm.errors.display : createQuizeForm.errors.display} />
+              {(openEditQuizform ? editQuizForm.errors.display : createQuizForm.errors.display) && (
+                <InputError message={openEditQuizform ? editQuizForm.errors.display : createQuizForm.errors.display} />
               )}
             </div>
 
@@ -166,11 +167,11 @@ function Index({ quizes }) {
               <InputLabel value="Is this Quiz Active?" />
               <RadioGroup
                 name="active"
-                value={String(openEditQuizeform ? editQuizeForm.data.active : createQuizeForm.data.active)}
+                value={String(openEditQuizform ? editQuizForm.data.active : createQuizForm.data.active)}
                 onChange={(val) =>
-                  openEditQuizeform
-                    ? editQuizeForm.setData('active', val === 'true')
-                    : createQuizeForm.setData('active', val === 'true')
+                  openEditQuizform
+                    ? editQuizForm.setData('active', val === 'true')
+                    : createQuizForm.setData('active', val === 'true')
                 }
                 options={[
                   { value: 'true', label: 'Yes' },
@@ -178,26 +179,26 @@ function Index({ quizes }) {
                 ]}
                 className="mt-2"
               />
-              {(openEditQuizeform ? editQuizeForm.errors.active : createQuizeForm.errors.active) && (
-                <InputError message={openEditQuizeform ? editQuizeForm.errors.active : createQuizeForm.errors.active} />
+              {(openEditQuizform ? editQuizForm.errors.active : createQuizForm.errors.active) && (
+                <InputError message={openEditQuizform ? editQuizForm.errors.active : createQuizForm.errors.active} />
               )}
             </div>
 
             <div className="w-full flex items-center justify-end gap-x-2">
               <Button
                 btnType="secondary"
-                disabled={openEditQuizeform ? editQuizeForm.processing : createQuizeForm.processing}
+                disabled={openEditQuizform ? editQuizForm.processing : createQuizForm.processing}
                 onClick={(e) => {
                   e.preventDefault();
-                  setAddQuizeModal(false);
-                  setOpenEditQuizeform(false);
+                  setAddQuizModal(false);
+                  setOpenEditQuizform(false);
                 }}
               >
                 Close
               </Button>
               <Button
                 btnType="success"
-                disabled={openEditQuizeform ? editQuizeForm.processing : createQuizeForm.processing}
+                disabled={openEditQuizform ? editQuizForm.processing : createQuizForm.processing}
               >
                 Submit
               </Button>
@@ -210,25 +211,27 @@ function Index({ quizes }) {
 
       <section >
         <div className='w-full flex items-center justify-end gap-x-2'>
-          <Button onClick={(e) => { e.preventDefault(); setAddQuizeModal(true) }}>add quize</Button>
+          <Button onClick={(e) => { e.preventDefault(); setAddQuizModal(true) }}>add quize</Button>
         </div>
 
-        <Table columns={['#', 'Name', 'Description', 'Visible', 'Active', 'Action']}>
+        <Table columns={['#', 'Name', 'Description', 'questions', 'Visible', 'Active', 'Action']}>
           {
-            quizes.length == 0 ? <div className="text-red-500  font-bold w-full  my-5">No Quize found on  </div> :
-              quizes.map((quize, index) => (<TableRow key={index || quize.id} isLast={index === quizes.length - 1}>
+            quizzes.length == 0 ? <div className="text-red-500  font-bold w-full  my-5">No Quiz found on  </div> :
+              quizzes.map((quize, index) => (<TableRow key={index || quize.id} isLast={index === quizzes.length - 1}>
                 <TableData>{index + 1}</TableData>
                 <TableData>{quize.name}</TableData>
                 <TableData>{quize.description ? quize.description : "No Description available"}</TableData>
+                <TableData>{quize.question.length}</TableData>
                 <TableData>{quize.display}</TableData>
                 <TableData>{quize.active ? 'Active' : "NotActive"}</TableData>
                 <TableData>
                   <div className='flex w-full items-center gap-x-2'>
-                  <EditBtn onClick={() => openEditQuizemodal(quize)} />
-                  <DeleteBtn onClick={() => {
-                    setOpenAlert(true);
-                    setDeleteQuizeId(quize.id)}} />
-                    </div>
+                    <EditBtn onClick={() => openEditQuizmodal(quize)} />
+                    <DeleteBtn onClick={() => {
+                      setOpenAlert(true);
+                      setDeleteQuizId(quize.id)
+                    }} />
+                  </div>
                 </TableData>
               </TableRow>))
 

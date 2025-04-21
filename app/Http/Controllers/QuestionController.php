@@ -7,14 +7,14 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreQuestionRequest;
 use App\Http\Requests\UpdateQuestionRequest;
 use App\Repositories\Interfaces\QuestionRepositoryInterface;
-use App\Repositories\Interfaces\QuizeRepositoryInterface;
+use App\Repositories\Interfaces\QuizRepositoryInterface;
 use Inertia\Inertia;
 
 class QuestionController extends Controller
 {
     protected $question_repo;
     protected $quize_repo;
-    public function __construct(QuestionRepositoryInterface $question_repository, QuizeRepositoryInterface $quize_repository)
+    public function __construct(QuestionRepositoryInterface $question_repository, QuizRepositoryInterface $quize_repository)
     {
         $this->question_repo = $question_repository;
         $this->quize_repo = $quize_repository;
@@ -24,8 +24,9 @@ class QuestionController extends Controller
     {
         $this->authorize('viewAny', Question::class);
         $questions = $this->question_repo->getAll();
-        $quizes = $this->quize_repo->getAll();
-        return Inertia::render('Questions/Index', compact('questions', 'quizes'));
+        $quizzes = $this->quize_repo->getAll();
+        // return $questions;
+        return Inertia::render('Questions/Index', compact('questions', 'quizzes'));
     }
 
     /**
@@ -71,10 +72,10 @@ class QuestionController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateQuestionRequest $request,Question $question)
-    {        
-        $this->authorize('update',$question);
-        
+    public function update(UpdateQuestionRequest $request, Question $question)
+    {
+        $this->authorize('update', $question);
+
         try {
             $valData = $request->validated();
             $this->question_repo->update($question->id, $valData);
@@ -97,5 +98,4 @@ class QuestionController extends Controller
             return redirect()->back()->with('error', 'Something went wrong');
         }
     }
-
 }

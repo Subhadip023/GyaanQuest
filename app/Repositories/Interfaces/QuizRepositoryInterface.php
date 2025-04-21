@@ -2,7 +2,7 @@
 
 namespace App\Repositories\Interfaces;
 
-interface QuizeRepositoryInterface
+interface QuizRepositoryInterface
 {
     public function getAll();
     public function create(array $data);

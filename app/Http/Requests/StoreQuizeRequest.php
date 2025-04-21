@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class StoreQuizeRequest extends FormRequest
+class StoreQuizRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -19,7 +19,7 @@ class StoreQuizeRequest extends FormRequest
             'name' => [
                 'required',
                 'string',
-                Rule::unique('quizes')->where(function ($query) {
+                Rule::unique('quizzes')->where(function ($query) {
                     return $query->where('user_id', auth()->id());
                 }),
             ],

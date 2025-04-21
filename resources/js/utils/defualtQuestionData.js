@@ -1,9 +1,9 @@
 export default {
-    id:null,
-    question:"",
-    type:'mcq',
-    number:1,
-    quizes_id:null,
-    display:'public',
-    isActive:true
+    id: null,
+    question: "",
+    type: 'mcq',
+    number: 1,
+    quiz_id: null,
+    display: 'public',
+    isActive: true
 }

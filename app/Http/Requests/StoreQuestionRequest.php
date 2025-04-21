@@ -24,12 +24,10 @@ class StoreQuestionRequest extends FormRequest
         return [
             'question' => ['required', 'string'],
             'type' => ['required', 'in:mcq,true_false,saq,long'],
-            'quizes_id' => ['required', 'exists:quizes,id'],
+            'quiz_id' => ['required', 'exists:quizzes,id'],
             'number' => ['required', 'numeric', 'between:0,999.99'],
             'isActive' => ['required', 'boolean'],
             'display' => ['required', 'in:public,private,room'],
-            ];
-       
-        
+        ];
     }
 }
