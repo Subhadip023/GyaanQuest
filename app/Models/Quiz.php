@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Quiz extends Model
 {
-    protected $table = 'quizzes';
+    protected $table = 'quizes';
 
     /** @use HasFactory<\Database\Factories\QuizFactory> */
     use HasFactory;
