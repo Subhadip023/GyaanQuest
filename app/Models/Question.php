@@ -9,12 +9,16 @@ class Question extends Model
 {
     /** @use HasFactory<\Database\Factories\QuestionFactory> */
     use HasFactory;
-    
-    protected $fillable = ["question","type","quizes_id","number","isActive","display"];
+
+    protected $fillable = ["question", "type", "quiz_id", "number", "isActive", "display", 'user_id'];
 
 
-    public function quize(){
-        $this->hasOne(Quize::class);
+    public function quiz()
+    {
+        return $this->belongsTo(Quiz::class, 'quiz_id');
     }
-
+    public function answers()
+    {
+        return $this->hasMany(Answare::class);
+    }
 }

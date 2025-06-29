@@ -1,7 +1,8 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
-
-export default function Dashboard() {
+import Button from '@/Components/Button';
+export default function Dashboard({ allQuizes = [] }) {
+    console.log(allQuizes);
     return (
         <AuthenticatedLayout
             header={
@@ -18,6 +19,16 @@ export default function Dashboard() {
                         <div className="p-6 text-gray-900">
                             You're logged in!
                         </div>
+                        {allQuizes.map((quiz) => (
+
+                            <div className="p-6 text-gray-900">
+                                {quiz.name}
+                                <Button btnType="secondary">Take Quiz</Button>
+
+                            </div>)
+
+                        )}
+                     
                     </div>
                 </div>
             </div>

@@ -23,6 +23,6 @@ class Score extends Model
 
     public function quiz()
     {
-        return $this->belongsTo(Quize::class);
+        return $this->belongsTo(Quiz::class);
     }
 }

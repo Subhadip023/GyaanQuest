@@ -41,9 +41,7 @@ function Index({ roles, permissions }) {
     }, [roles])
 
     const submitAddRoleForm = (e) => {
-
         e.preventDefault();
-
         createRoleForm.post(route('roles.store'), {
             preserveScroll: true,
             onSuccess: () => {
@@ -311,7 +309,7 @@ function Index({ roles, permissions }) {
                             onClick={() => setOpenModal(true)}
                             btnType="primary"
                         >
-                            <Pluse/> Role
+                            <Pluse /> Role
 
                         </Button>
                         <Button
@@ -319,7 +317,7 @@ function Index({ roles, permissions }) {
                             btnType="primary"
                             disabled={createPermissionForm.processing}
                         >
-                            <Pluse/> Permission
+                            <Pluse /> Permission
                         </Button>
                     </div>
                 </div>
@@ -347,10 +345,10 @@ function Index({ roles, permissions }) {
                             }</TableData>
                             <TableData>
                                 <div className="flex items-center gap-x-2">
-                                <EditBtn onClick={() => handleEditRoleForm(role.id)} />
-                                <DeleteBtn onClick={() => handleDeleteRoleForm(role.id)} />
+                                    <EditBtn onClick={() => handleEditRoleForm(role.id)} />
+                                    <DeleteBtn onClick={() => handleDeleteRoleForm(role.id)} />
                                 </div>
-                               
+
                             </TableData>
                         </TableRow>
 

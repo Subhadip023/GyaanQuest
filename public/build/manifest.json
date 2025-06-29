@@ -359,10 +359,10 @@
       "_transition-HQgnNRUc.js"
     ]
   },
-  "resources/js/Pages/Quizee/Index.jsx": {
+  "resources/js/Pages/Quize/Index.jsx": {
     "file": "assets/Index-Dk8liskT.js",
     "name": "Index",
-    "src": "resources/js/Pages/Quizee/Index.jsx",
+    "src": "resources/js/Pages/Quize/Index.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
@@ -414,7 +414,7 @@
       "resources/js/Pages/Profile/Partials/DeleteUserForm.jsx",
       "resources/js/Pages/Profile/Partials/UpdatePasswordForm.jsx",
       "resources/js/Pages/Profile/Partials/UpdateProfileInformationForm.jsx",
-      "resources/js/Pages/Quizee/Index.jsx",
+      "resources/js/Pages/Quize/Index.jsx",
       "resources/js/Pages/Welcome.jsx"
     ],
     "css": [

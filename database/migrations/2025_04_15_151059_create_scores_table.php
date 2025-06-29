@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('scores', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('quize_id')->constrained()->onDelete('cascade');
+            $table->foreignId('quiz_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->decimal('score', 5, 2)->default(0.00);
             $table->timestamps();

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AnswareController;
 use App\Http\Controllers\assignRoles;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfileController;
@@ -9,7 +10,10 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\ArtisanCommandController;
-use App\Http\Controllers\QuizeController;
+use App\Http\Controllers\DashBoardController;
+use App\Http\Controllers\QuestionController;
+use App\Http\Controllers\QuizController;
+use App\Models\Question;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -20,13 +24,11 @@ Route::get('/', function () {
         'bgImageUrl' => asset('images/main-bg.jpg'),
         'girlImageUrl' => asset('images/main-girl-image.jpg'),
         'isAuth' => auth()->check(),
-        'isAdmin'=>auth()->user()?->hasRole('admin'),
+        'isAdmin' => auth()->user()?->hasRole('admin'),
     ]);
 });
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', DashBoardController::class)->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -47,9 +49,11 @@ Route::get('admin', function () {
 
 Route::resource('roles', RoleController::class);
 Route::resource('permissions', PermissionController::class);
-Route::resource('users',UserController::class);
+Route::resource('users', UserController::class);
 
-Route::post('/assignRole',assignRoles::class)->name('assign-role');
-Route::resource('quizes',QuizeController::class);
+Route::post('/assignRole', assignRoles::class)->name('assign-role');
+Route::resource('quizzes', QuizController::class)->middleware('auth');
+Route::resource('questions', QuestionController::class)->middleware('auth');
+Route::resource('answers', AnswareController::class)->middleware('auth');
 
 require __DIR__ . '/auth.php';

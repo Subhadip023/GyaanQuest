@@ -13,7 +13,7 @@ class QuestionPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -29,7 +29,7 @@ class QuestionPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -37,7 +37,7 @@ class QuestionPolicy
      */
     public function update(User $user, Question $question): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -45,7 +45,7 @@ class QuestionPolicy
      */
     public function delete(User $user, Question $question): bool
     {
-        return false;
+        return $user->id===$question->user_id;
     }
 
     /**

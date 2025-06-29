@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('quizes', function (Blueprint $table) {
+        Schema::table('quizzes', function (Blueprint $table) {
             $table->boolean('active')->default(true)->after('display');
         });
     }
@@ -21,7 +21,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('quizes', function (Blueprint $table) {
+        Schema::table('quizzes', function (Blueprint $table) {
             $table->dropColumn('active');
 
         });
