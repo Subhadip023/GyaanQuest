@@ -44,6 +44,7 @@ class DatabaseSeeder extends Seeder
 
         // Assign Role to Admin User
         $user->assignRole('admin');
+        User::factory(10)->create();
     }
     
 }
