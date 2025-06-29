@@ -7,7 +7,7 @@ import TableRow from '@/Components/Table/TableRow'
 import AdminLayout from '@/Layouts/AdminLayout'
 import PaginationNav from '@/Components/PaginationNav'
 import React, { useState } from 'react'
-import { useForm } from '@inertiajs/react'
+import { Link, useForm } from '@inertiajs/react'
 import defualtQuestionData from '@/utils/defualtQuestionData'
 import Modal from '@/Components/Modal'
 import InputLabel from '@/Components/InputLabel';
@@ -104,11 +104,9 @@ function Index({ questions, quizzes }) {
     createAnswerForm.setData('question_id', question.id);
     createAnswerForm.setData('question_name', question.question);
     createAnswerForm.setData('question_type', question.type);
-    // createAnswerForm.setData('question_number', question.type);
 
 
   }
-  // console.log(createAnswerForm.data.answers)
 
   const handelCreateAnswer = (e) => {
     e.preventDefault();
@@ -125,9 +123,21 @@ function Index({ questions, quizzes }) {
       }
     })
   }
+  if (quizzes.length === 0) {
+    return (
+      <AdminLayout title='Questions' heading='Questions'>
 
+      <div className='flex flex-col items-center justify-center h-72'>
+        <h1 className='text-2xl font-bold'>No quizzes found. Please create a quiz first.</h1>
+        <Link className='px-5 py-2 mt-5 text-white bg-blue-500 rounded hover:bg-blue-600' href={route('quizzes.index')}>Quiz</Link>
+      </div>
+      </AdminLayout >
+
+    )
+  }
 
   return (
+
     <AdminLayout title='Questions' heading='Questions'>
       <AlertModal show={openDeleteAlertModal} onClose={() => setOpenDeleteAlertModal(false)} onConfirm={deleteQuestion} />
 
