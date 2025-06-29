@@ -127,10 +127,10 @@ function Index({ questions, quizzes }) {
     return (
       <AdminLayout title='Questions' heading='Questions'>
 
-      <div className='flex flex-col items-center justify-center h-72'>
-        <h1 className='text-2xl font-bold'>No quizzes found. Please create a quiz first.</h1>
-        <Link className='px-5 py-2 mt-5 text-white bg-blue-500 rounded hover:bg-blue-600' href={route('quizzes.index')}>Quiz</Link>
-      </div>
+        <div className='flex flex-col items-center justify-center h-72'>
+          <h1 className='text-2xl font-bold'>No quizzes found. Please create a quiz first.</h1>
+          <Link className='px-5 py-2 mt-5 text-white bg-blue-500 rounded hover:bg-blue-600' href={route('quizzes.index')}>Quiz</Link>
+        </div>
       </AdminLayout >
 
     )
@@ -488,8 +488,13 @@ function Index({ questions, quizzes }) {
               <TableRow key={index || question.id} isLast={index === paginatedQuestions.length - 1}>
                 <TableData>{startIndex + index + 1}</TableData>
                 <TableData>{question.question}</TableData>
-                <TableData>{question.answers.length == 0 ? <Button onClick={() => creatAnswer(question)}><Pluse /></Button> : question.answer.filter((answer) => answer.is_correct).map((answer) => answer.answare).join(', ')}
+                <TableData>
+                  {question.answers.length === 0
+                    ? <Button onClick={() => creatAnswer(question)}><Pluse /></Button>
+                    : question.answers.filter((answer) => answer.is_correct).map((answer) => answer.answare).join(', ')
+                  }
                 </TableData>
+
                 <TableData>{question.number}</TableData>
                 <TableData>{question.type}</TableData>
                 <TableData>{question.isActive ? 'Active' : 'Not active'}</TableData>

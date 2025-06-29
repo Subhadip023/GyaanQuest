@@ -43,9 +43,9 @@ class QuizPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Quiz $quize): bool
+    public function delete(User $user, Quiz $quiz): bool
     {
-        return $user->id == $quize->user_id;
+        return $user->id == $quiz->user_id;
     }
 
     /**

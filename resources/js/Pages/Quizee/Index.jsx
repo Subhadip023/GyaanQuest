@@ -5,7 +5,7 @@ import TableData from '@/Components/Table/TableData';
 import TableRow from '@/Components/Table/TableRow';
 import AdminLayout from '@/Layouts/AdminLayout';
 import { useForm } from '@inertiajs/react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import defualtQuizData from '@/utils/defualtQuizeData';
 import InputLabel from '@/Components/InputLabel';
 import TextInput from '@/Components/TextInput';
@@ -20,7 +20,9 @@ function Index({ quizzes }) {
   const [openAddQuizModal, setAddQuizModal] = useState(false);
   const [openEditQuizform, setOpenEditQuizform] = useState(false);
   const [deleteQuizId, setDeleteQuizId] = useState(null);
+  const [filterQuizes, setFilterQuizes] = useState(quizzes);
   const [openAlert, setOpenAlert] = useState(false);
+  const [openAddQuestionFrom, setOpenAddQuestionFrom] = useState(false);
   const createQuizForm = useForm(defualtQuizData);
   const editQuizForm = useForm(defualtQuizData);
   const deleteQuizForm = useForm();
@@ -29,7 +31,11 @@ function Index({ quizzes }) {
     editQuizForm.setData(quize);
     setOpenEditQuizform(true);
   }
-  console.log(quizzes[0])
+
+  useEffect(() => {
+    setFilterQuizes(quizzes)
+  }, [quizzes])
+
 
 
   const submitAddQuizFrom = (e) => {
@@ -85,10 +91,25 @@ function Index({ quizzes }) {
       }
     );
   }
+  const filterSearchQizes = (value) => {
+    const searchValue = (value ?? '').trim(); // avoids null/undefined
+
+    if (searchValue === '') {
+      setFilterQuizes(quizzes);
+      return;
+    }
+
+    const filtered = quizzes.filter((quize) =>
+      quize.name?.toLowerCase().includes(searchValue.toLowerCase())
+    );
+
+    setFilterQuizes(filtered);
+  };
+
 
 
   return (
-    <AdminLayout title='Quiz' heading='Quiz'>
+    <AdminLayout title='Quiz' heading='Quiz' searchFunction={filterSearchQizes} serachBoxPlaceHolder="Search by Quize name">
       <AlertModal show={openAlert} onClose={() => setOpenAlert(false)} onConfirm={submitDeletRoleForm} title="Delete Quiz?"
         message="Are you sure you want to delete this quiz? This action cannot be undone."
       />
@@ -206,6 +227,11 @@ function Index({ quizzes }) {
           </form>
         </div>
       </Modal>
+      <Modal show={openAddQuestionFrom} onClose={(e) => { e.preventDefault(); setOpenAddQuestionFrom(false) }}>
+        <div className='w-full flex items-center justify-end gap-x-2'>
+          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Magnam officia unde, assumenda eius autem quibusdam obcaecati molestias repudiandae vel ipsa, provident facilis! Eaque ratione ea eius incidunt iste ex vitae?
+        </div>
+      </Modal>
 
 
 
@@ -216,8 +242,8 @@ function Index({ quizzes }) {
 
         <Table columns={['#', 'Name', 'Description', 'questions', 'Visible', 'Active', 'Action']}>
           {
-            quizzes.length == 0 ? <div className="text-red-500  font-bold w-full  my-5">No Quiz found on  </div> :
-              quizzes.map((quize, index) => (<TableRow key={index || quize.id} isLast={index === quizzes.length - 1}>
+            filterQuizes.length == 0 ? <div className="text-red-500  font-bold w-full  my-5">No Quiz found on  </div> :
+              filterQuizes.map((quize, index) => (<TableRow key={index || quize.id} isLast={index === filterQuizes.length - 1}>
                 <TableData>{index + 1}</TableData>
                 <TableData>{quize.name}</TableData>
                 <TableData>{quize.description ? quize.description : "No Description available"}</TableData>

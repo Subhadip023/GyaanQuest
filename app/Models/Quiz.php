@@ -7,9 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Quiz extends Model
 {
+    protected $table = 'quizzes';
+
     /** @use HasFactory<\Database\Factories\QuizFactory> */
     use HasFactory;
-
     protected $fillable = ['name', 'description', 'user_id', 'display', 'active'];
 
     public function question()
@@ -19,6 +20,10 @@ class Quiz extends Model
     public function scores()
     {
         return $this->hasMany(Score::class);
+    }
+
+    public function creator(){
+        return $this->belongsTo(User::class);
     }
 
     public function users()

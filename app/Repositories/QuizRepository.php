@@ -29,4 +29,8 @@ class QuizRepository implements QuizRepositoryInterface
         $quize = Quiz::findOrFail($id);
         $quize->delete();
     }
+    public function get($id)
+    {
+        return Quiz::findOrFail($id);
+    }
 }

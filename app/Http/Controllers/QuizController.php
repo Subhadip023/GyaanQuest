@@ -7,8 +7,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreQuizRequest;
 use App\Http\Requests\UpdateQuizRequest;
 use App\Repositories\Interfaces\QuizRepositoryInterface;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use PHPUnit\Framework\MockObject\Stub\ReturnStub;
+
 
 class QuizController extends Controller
 {
@@ -76,16 +78,19 @@ class QuizController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Quiz $quize)
+    public function destroy(Quiz $quiz)
     {
         try {
-            $this->authorize('delete', $quize);
+            $this->authorize('delete', $quiz);
 
-            $this->quize_repo->delete($quize->id);
+            $this->quize_repo->delete($quiz->id);
 
             return redirect()->back()->with('success', 'Quiz deleted successfully!');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Failed to delete quiz. ' . $e->getMessage());
+            // return redirect()->back()->with('error', 'Failed to delete quiz. ' . $e->getMessage());
+            log::error('Failed to delete quiz: ' . $e->getsMessage());
+            
+            return redirect()->back()->with('error', 'Failed to delete quiz.');
         }
     }
 }
