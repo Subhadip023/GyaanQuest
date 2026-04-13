@@ -19,18 +19,18 @@ class QuizRepository implements QuizRepositoryInterface
 
     public function update($id, array $data)
     {
-        $quize = Quiz::findOrFail($id);
-        $quize->update($data);
-        return $quize;
+        $quiz = Quiz::findOrFail($id);
+        $quiz->update($data);
+        return $quiz;
     }
 
     public function delete($id)
     {
-        $quize = Quiz::findOrFail($id);
-        $quize->delete();
+        $quiz = Quiz::findOrFail($id);
+        $quiz->delete();
     }
-    public function get($id)
+    public function get($id, array $relations = [])
     {
-        return Quiz::findOrFail($id);
+        return Quiz::with($relations)->findOrFail($id);
     }
 }

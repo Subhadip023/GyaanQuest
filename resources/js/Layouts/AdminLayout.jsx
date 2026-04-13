@@ -62,7 +62,7 @@ function AdminLayout({
                 <div className="w-full flex flex-wrap items-center justify-between mx-auto p-4">
                     <div className="flex gap-x-5 items-center ml-5">
                         <Link
-                            to="/admin"
+                            href={route('admin')}
                             className="flex items-center  space-x-3 rtl:space-x-reverse"
                         >
                             {/* <img

@@ -1,5 +1,5 @@
 export default {
     id:null,
-    name: null,
+    name: '',
     permissions: []
 }

@@ -9,7 +9,7 @@ class RoleReposetory implements RoleReposetoryInterface
 {
     public function getAll($paginate, $search)
     {
-        return Role::with('permissions')
+        return Role::query()
             ->when($search, fn($query) => $query->where('name', 'like', "%{$search}%"))
             ->latest()
             ->paginate($paginate)
@@ -18,25 +18,13 @@ class RoleReposetory implements RoleReposetoryInterface
 
     public function create(array $data)
     {
-        $role = Role::create(['name' => $data['name']]);
-
-        if (!empty($data['permissions'])) {
-            $role->givePermissionTo($data['permissions']);
-        }
-
-        return $role;
+        return Role::create(['name' => $data['name']]);
     }
 
     public function update($id, array $data)
     {
         $role = Role::findOrFail($id);
         $role->update(['name' => $data['name']]);
-
-        if (isset($data['permissions'])) {
-            $role->syncPermissions($data['permissions']);
-        } else {
-            $role->syncPermissions([]);
-        }
 
         return $role;
     }

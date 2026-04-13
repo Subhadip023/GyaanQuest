@@ -7,25 +7,28 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreQuizRequest;
 use App\Http\Requests\UpdateQuizRequest;
 use App\Repositories\Interfaces\QuizRepositoryInterface;
+use App\Repositories\Interfaces\ScoreRepositoryInterface;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use PHPUnit\Framework\MockObject\Stub\ReturnStub;
+use App\Models\Answare;
 
 
 class QuizController extends Controller
 {
-    protected $quize_repo;
+    protected $quiz_repo;
+    protected $score_repo;
 
-    public function __construct(QuizRepositoryInterface $quize_repository)
+    public function __construct(QuizRepositoryInterface $quiz_repository, ScoreRepositoryInterface $score_repository)
     {
-        $this->quize_repo = $quize_repository;
+        $this->quiz_repo = $quiz_repository;
+        $this->score_repo = $score_repository;
     }
 
 
     public function index()
     {
-        $quizzes = $this->quize_repo->getAll();
-        return Inertia::render('Quizee/Index', ['quizzes' => $quizzes]);
+        $quizzes = $this->quiz_repo->getAll();
+        return Inertia::render('Quizzes/Index', ['quizzes' => $quizzes]);
     }
 
 
@@ -38,7 +41,7 @@ class QuizController extends Controller
         try {
             $valData = $request->validated();
             $valData['user_id'] = auth()->id();
-            $this->quize_repo->create($valData);
+            $this->quiz_repo->create($valData);
 
             return redirect()->back()->with('success', 'Quiz created successfully!');
         } catch (\Exception $e) {
@@ -50,9 +53,48 @@ class QuizController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Quiz $quize)
+    public function show($id)
     {
-        //
+        $quiz = $this->quiz_repo->get($id, ['question.answers']);
+        return Inertia::render('Quizzes/Play', ['quiz' => $quiz]);
+    }
+
+    /**
+     * Submit the quiz and calculate score.
+     */
+    public function submit(Request $request, Quiz $quiz)
+    {
+        $userAnswers = $request->input('answers'); // Format: [question_id => answer_id]
+        $questions = $quiz->question()->with('answers')->get();
+        
+        $correctCount = 0;
+        $totalQuestions = $questions->count();
+
+        foreach ($questions as $question) {
+            $submittedAnswerId = $userAnswers[$question->id] ?? null;
+            $correctAnswer = $question->answers->where('is_correct', true)->first();
+
+            if ($submittedAnswerId && $correctAnswer && $submittedAnswerId == $correctAnswer->id) {
+                $correctCount++;
+            }
+        }
+
+        $scorePercentage = $totalQuestions > 0 ? ($correctCount / $totalQuestions) * 100 : 0;
+
+        $scoreData = [
+            'quiz_id' => $quiz->id,
+            'user_id' => auth()->id(),
+            'score' => $scorePercentage,
+        ];
+
+        $this->score_repo->create($scoreData);
+
+        return redirect()->back()->with([
+            'success' => 'Quiz submitted successfully!',
+            'score' => $scorePercentage,
+            'correctCount' => $correctCount,
+            'totalCount' => $totalQuestions,
+        ]);
     }
 
 
@@ -60,13 +102,13 @@ class QuizController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateQuizRequest $request, Quiz $quize)
+    public function update(UpdateQuizRequest $request, Quiz $quiz)
     {
         try {
-            $this->authorize('update', $quize);
+            $this->authorize('update', $quiz);
 
             $valData = $request->validated();
-            $this->quize_repo->update($quize->id, $valData);
+            $this->quiz_repo->update($quiz->id, $valData);
 
             return redirect()->back()->with('success', 'Quiz updated successfully!');
         } catch (\Exception $e) {
@@ -83,7 +125,7 @@ class QuizController extends Controller
         try {
             $this->authorize('delete', $quiz);
 
-            $this->quize_repo->delete($quiz->id);
+            $this->quiz_repo->delete($quiz->id);
 
             return redirect()->back()->with('success', 'Quiz deleted successfully!');
         } catch (\Exception $e) {

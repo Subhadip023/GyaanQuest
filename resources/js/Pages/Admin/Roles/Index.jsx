@@ -16,11 +16,10 @@ import Table from "@/Components/Table/Table";
 import TableRow from "@/Components/Table/TableRow";
 import TableData from "@/Components/Table/TableData";
 import Pluse from "@/Components/Svgs/Pluse";
-function Index({ roles, permissions }) {
+function Index({ roles }) {
 
     const perPage = roles.per_page || 10;
     const [openModal, setOpenModal] = useState(false);
-    const [openPermissionModal, setOpenPermissionModal] = useState(false);
     const [searchRole, setSearchRole] = useState(null);
     const [filterRoles, setFilterRoles] = useState([]);
     const [selectNumbers, setSelectNumbers] = useState(perPage);
@@ -29,10 +28,6 @@ function Index({ roles, permissions }) {
 
     const createRoleForm = useForm('createRoleForm', defualtRoleData);
     const paginageRoleForm = useForm();
-
-    const createPermissionForm = useForm(' ', {
-        name: null
-    });
     const editRoleForm = useForm(defualtRoleData);
     const deleteRoleForm = useForm();
 
@@ -56,24 +51,7 @@ function Index({ roles, permissions }) {
         setIsLoading(false);
     };
 
-    const submitAddPermission = (e) => {
-        setIsLoading(true);
-        e.preventDefault();
 
-        createPermissionForm.post(route('permissions.store'), {
-            preserveScroll: true,
-            onSuccess: () => {
-                createPermissionForm.reset();
-                setOpenPermissionModal(false);
-            },
-            onError: (errors) => {
-                setOpenPermissionModal(true);
-                console.error("Validation Errors:", errors);
-            }
-        });
-        setIsLoading(false);
-
-    };
 
     const handleSearchRoles = (value) => {
         setSearchRole(value);
@@ -92,7 +70,6 @@ function Index({ roles, permissions }) {
         const editRole = filterRoles.find((role) => role.id == id)
         editRoleForm.setData('id', id);
         editRoleForm.setData('name', editRole.name)
-        editRoleForm.setData('permissions', [...editRole.permissions.map((p) => p.name)])
         setOpenEditRoleModal(true);
     }
 
@@ -151,30 +128,6 @@ function Index({ roles, permissions }) {
                                 {createRoleForm.errors.name && <InputError message={createRoleForm.errors.name} />}
                             </div>
 
-                            {/* Permissions Checkboxes */}
-                            <div className="mb-6 w-full">
-                                <InputLabel value="Assign Permissions" />
-                                <div className="grid grid-cols-2 gap-2 mt-2">
-                                    {permissions.map((permission, index) => (
-                                        <label key={index} className="flex items-center space-x-2">
-                                            <input
-                                                type="checkbox"
-                                                value={permission}
-                                                checked={createRoleForm.data.permissions.includes(permission)}
-                                                onChange={(e) => {
-                                                    const selectedPermissions = createRoleForm.data.permissions.includes(permission)
-                                                        ? createRoleForm.data.permissions.filter((p) => p !== permission)
-                                                        : [...createRoleForm.data.permissions, permission];
-
-                                                    createRoleForm.setData('permissions', selectedPermissions);
-                                                }}
-                                            />
-                                            <span className="text-gray-700 dark:text-gray-400">{permission}</span>
-                                        </label>
-                                    ))}
-                                </div>
-                                {createRoleForm.errors.permissions && <InputError message={createRoleForm.errors.permissions} />}
-                            </div>
                         </div>
 
                         {/* Buttons */}
@@ -199,40 +152,7 @@ function Index({ roles, permissions }) {
                 </div>
             </Modal>
 
-            {/* Modal for Creating Permissions */}
-            <Modal show={openPermissionModal} onClose={() => setOpenPermissionModal(false)} maxWidth="sm">
-                <div className="p-5">
-                    <form onSubmit={submitAddPermission}>
-                        <div className="mb-6 w-full">
-                            <InputLabel value="Enter Permission Name" />
-                            <TextInput
-                                name="name"
-                                className="w-full"
-                                value={createPermissionForm.data.name}
-                                onChange={(e) => createPermissionForm.setData('name', e.target.value)}
-                            />
-                            {createPermissionForm.errors.name && <InputError message={createPermissionForm.errors.name} />}
-                        </div>
-                        <div className="w-full  flex items-center gap-x-2 justify-center">
-                            <Button
-                                disabled={createRoleForm.processing}
-                                btnType="secondary" onClick={(e) => { e.preventDefault(); setOpenPermissionModal(false); }}
-                            >
-                                Close
-                            </Button>
 
-                            <Button
-                                disabled={createPermissionForm.processing}
-                                type="submit"
-                                btnType="success"
-                            >
-                                {createPermissionForm.processing ? "Creating Permission ..." : "Create Permission"}
-                            </Button>
-                        </div>
-
-                    </form>
-                </div>
-            </Modal>
 
             {/* Modal for Edit Role */}
 
@@ -252,30 +172,6 @@ function Index({ roles, permissions }) {
                                 {editRoleForm.errors.name && <InputError message={editRoleForm.errors.name} />}
                             </div>
 
-                            {/* Permissions Checkboxes */}
-                            <div className="mb-6 w-full">
-                                <InputLabel value="Assign Permissions" />
-                                <div className="grid grid-cols-2 gap-2 mt-2">
-                                    {permissions.map((permission, index) => (
-                                        <label key={index} className="flex items-center space-x-2">
-                                            <input
-                                                type="checkbox"
-                                                value={permission}
-                                                checked={editRoleForm.data.permissions.includes(permission)}
-                                                onChange={(e) => {
-                                                    const selectedPermissions = editRoleForm.data.permissions.includes(permission)
-                                                        ? editRoleForm.data.permissions.filter((p) => p !== permission)
-                                                        : [...editRoleForm.data.permissions, permission];
-
-                                                    editRoleForm.setData('permissions', selectedPermissions);
-                                                }}
-                                            />
-                                            <span className="text-gray-700 dark:text-gray-400">{permission}</span>
-                                        </label>
-                                    ))}
-                                </div>
-                                {editRoleForm.errors.permissions && <InputError message={editRoleForm.errors.permissions} />}
-                            </div>
                         </div>
 
                         {/* Buttons */}
@@ -312,18 +208,17 @@ function Index({ roles, permissions }) {
                             <Pluse /> Role
 
                         </Button>
-                        <Button
-                            onClick={() => setOpenPermissionModal(true)}
-                            btnType="primary"
-                            disabled={createPermissionForm.processing}
-                        >
-                            <Pluse /> Permission
-                        </Button>
                     </div>
                 </div>
 
-                <Table columns={['#', 'Name', 'Permissions', 'Action']}>
-                    {filterRoles.length == 0 ? <div className="text-red-500  font-bold w-full  my-5">No Role found on {searchRole} </div> : filterRoles.map((role, index) => (
+                <Table columns={['#', 'Name', 'Action']}>
+                    {filterRoles.length === 0 ? (
+                        <TableRow>
+                            <TableData colSpan="3" className="text-red-500 font-bold text-center py-5">
+                                No Role found on {searchRole || "search"}
+                            </TableData>
+                        </TableRow>
+                    ) : filterRoles.map((role, index) => (
 
                         <TableRow key={role.id || index} isLast={index == filterRoles.length - 1} >
                             <TableData>{index + 1}</TableData>
@@ -335,14 +230,7 @@ function Index({ roles, permissions }) {
                                     textToHighlight={role.name}
                                 />
                             </TableData>
-                            <TableData>{
-                                <Highlighter
-                                    highlightClassName="highlight"
-                                    searchWords={[searchRole]}
-                                    autoEscape={false}
-                                    textToHighlight={role.permissions?.map(p => p.name).join(", ") || "No Permissions"}
-                                />
-                            }</TableData>
+
                             <TableData>
                                 <div className="flex items-center gap-x-2">
                                     <EditBtn onClick={() => handleEditRoleForm(role.id)} />

@@ -13,18 +13,18 @@ use Inertia\Inertia;
 class QuestionController extends Controller
 {
     protected $question_repo;
-    protected $quize_repo;
-    public function __construct(QuestionRepositoryInterface $question_repository, QuizRepositoryInterface $quize_repository)
+    protected $quiz_repo;
+    public function __construct(QuestionRepositoryInterface $question_repository, QuizRepositoryInterface $quiz_repository)
     {
         $this->question_repo = $question_repository;
-        $this->quize_repo = $quize_repository;
+        $this->quiz_repo = $quiz_repository;
     }
 
     public function index()
     {
         $this->authorize('viewAny', Question::class);
         $questions = $this->question_repo->getAll();
-        $quizzes = $this->quize_repo->getAll();
+        $quizzes = $this->quiz_repo->getAll();
         // return $questions;
         return Inertia::render('Questions/Index', compact('questions', 'quizzes'));
     }

@@ -25,11 +25,9 @@ class RoleController extends Controller
         $search = $request->input('search');
 
         $roles = $this->roleRepo->getAll($paginatePage, $search);
-        $permissions = \Spatie\Permission\Models\Permission::pluck('name')->toArray();
-
+        
         return Inertia::render('Admin/Roles/Index', [
             'roles' => $roles,
-            'permissions' => $permissions,
         ]);
     }
 

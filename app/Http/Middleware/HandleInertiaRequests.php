@@ -34,13 +34,14 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
                 'role' => $request->user() ? $request->user()->roles->pluck('name')->toArray() : [],
-                'permissions'=>$request->user() ? $request->user()->permissions->pluck('name')->toArray() : []
-
             ],
             'flash' => [
-            'success' => session('success'),
-            'error' => session('error'),
-        ],
+                'success' => session('success'),
+                'error' => session('error'),
+                'score' => session('score'),
+                'correctCount' => session('correctCount'),
+                'totalCount' => session('totalCount'),
+            ],
         ];
     }
 }

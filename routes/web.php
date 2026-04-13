@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\AnswareController;
+use App\Http\Controllers\AnswerController;
 use App\Http\Controllers\assignRoles;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfileController;
@@ -28,7 +28,7 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/dashboard', DashBoardController::class)->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', DashBoardController::class)->middleware(['auth'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -44,16 +44,16 @@ Route::get('view-logs', function () {
 
 Route::get('admin', function () {
     return Inertia::render('Admin/Index');
-})->name('admin')->middleware(['auth', 'permission:view admin dashboard']);
+})->name('admin')->middleware(['auth']);
 
 
 Route::resource('roles', RoleController::class);
-Route::resource('permissions', PermissionController::class);
 Route::resource('users', UserController::class);
 
 Route::post('/assignRole', assignRoles::class)->name('assign-role');
 Route::resource('quizzes', QuizController::class)->middleware('auth');
+Route::post('/quizzes/{quiz}/submit', [QuizController::class, 'submit'])->name('quizzes.submit')->middleware('auth');
 Route::resource('questions', QuestionController::class)->middleware('auth');
-Route::resource('answers', AnswareController::class)->middleware('auth');
+Route::resource('answers', AnswerController::class)->middleware('auth');
 
 require __DIR__ . '/auth.php';

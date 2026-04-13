@@ -19,7 +19,7 @@ class QuizPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Quiz $quize): bool
+    public function view(User $user, Quiz $quiz): bool
     {
         return false;
     }
@@ -35,9 +35,9 @@ class QuizPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Quiz $quize): bool
+    public function update(User $user, Quiz $quiz): bool
     {
-        return $user->id == $quize->user_id;
+        return $user->id == $quiz->user_id;
     }
 
     /**
@@ -51,7 +51,7 @@ class QuizPolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, Quiz $quize): bool
+    public function restore(User $user, Quiz $quiz): bool
     {
         return false;
     }
@@ -59,7 +59,7 @@ class QuizPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, Quiz $quize): bool
+    public function forceDelete(User $user, Quiz $quiz): bool
     {
         return false;
     }

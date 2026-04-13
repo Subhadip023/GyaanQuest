@@ -10,17 +10,21 @@ use App\Repositories\Interfaces\QuizRepositoryInterface;
 class DashBoardController extends Controller
 {
 
-    protected $quize_repo;
+    protected $quiz_repo;
 
-    public function __construct(QuizRepositoryInterface $quize_repository)
+    public function __construct(QuizRepositoryInterface $quiz_repository)
     {
-        $this->quize_repo = $quize_repository;
+        $this->quiz_repo = $quiz_repository;
     }
 
     public function __invoke(Request $request)
-
     {
-        $allQuizes = $this->quize_repo->getAll();
-        return Inertia::render('Dashboard', compact('allQuizes'));
+        $allQuizzes = $this->quiz_repo->getAll();
+        $recentScores = auth()->user()->scores()->with('quiz')->latest()->take(5)->get();
+        
+        return Inertia::render('Dashboard', [
+            'allQuizzes' => $allQuizzes,
+            'recentScores' => $recentScores,
+        ]);
     }
 }

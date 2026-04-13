@@ -3,7 +3,7 @@ export default {
     question: "",
     type: 'mcq',
     number: 1,
-    quiz_id: null,
+    quiz_id: '',
     display: 'public',
     isActive: true
 }
