@@ -99,6 +99,11 @@ export default function Welcome({
                             Test your knowledge, track progress, and enhance
                             skills with engaging quizzes and real-time scoring!
                         </div>
+                        <div>
+                            {isAuth && <Link className="bg-blue-800 px-5 py-2 text-white h-full flex items-center rounded-lg hover:bg-blue-900 transition-colors duration-300" href={route('dashboard')}>
+                                Go to Quiz Page
+                            </Link>}
+                        </div>
                     </motion.main>
                 </section>
             )}
