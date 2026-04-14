@@ -1,0 +1,57 @@
+# GyaanQuest - Project Summary
+
+## Short Description
+GyaanQuest is a robust web-based quiz management system developed using Laravel for the backend and React with Inertia.js for the frontend. The platform enables users to create personalized quizzes, manage a diverse set of questions (including Multiple Choice, True/False, and Short/Long answers), and participate in quiz sessions. It features user authentication, role-based access control, and real-time score tracking to provide a comprehensive learning and assessment experience.
+
+## Database Schema
+
+### Table: users
+- id (BigInt, PK): Unique identifier for each user.
+- name (String): Full name of the user.
+- email (String, Unique): User's email address for login.
+- email_verified_at (Timestamp, Nullable): Date/time when the email was verified.
+- password (String): Hashed password.
+- remember_token (String, Nullable): Token for "remember me" functionality.
+- created_at / updated_at: Timestamps for record management.
+
+### Table: quizzes
+- id (BigInt, PK): Unique identifier for each quiz.
+- name (String): Title of the quiz.
+- description (Text, Nullable): Detailed description of what the quiz covers.
+- user_id (BigInt, FK): References the user who created the quiz.
+- display (Enum: 'public', 'private', 'room'): Visibility settings for the quiz.
+- active (Boolean): Indicates if the quiz is currently open for participants.
+- created_at / updated_at: Timestamps for record management.
+
+### Table: questions
+- id (BigInt, PK): Unique identifier for each question.
+- question (Text): The text content of the question.
+- type (Enum: 'mcq', 'true_false', 'saq', 'long'): The format of the question.
+- quiz_id (BigInt, FK): References the quiz this question belongs to.
+- user_id (BigInt, FK): References the creator.
+- number (Decimal): The weight or marks assigned to this question.
+- isActive (Boolean): Toggle for enabling/disabling the question.
+- display (Enum: 'public', 'private', 'room'): Visibility settings.
+- created_at / updated_at: Timestamps for record management.
+
+### Table: answers
+- id (BigInt, PK): Unique identifier for each answer option.
+- question_id (BigInt, FK): References the question this answer belongs to.
+- answer (Text): The text content of the answer option.
+- is_correct (Boolean): Flag indicating if this is a correct answer.
+- is_long (Boolean): Flag for long-form answers.
+- created_at / updated_at: Timestamps for record management.
+
+### Table: scores
+- id (BigInt, PK): Unique identifier for each result record.
+- user_id (BigInt, FK): References the user who took the quiz.
+- quiz_id (BigInt, FK): References the quiz taken.
+- score (Decimal): The final score achieved by the user.
+- created_at / updated_at: Timestamps for record management.
+
+### Table: otps
+- id (BigInt, PK): Unique identifier for OTP records.
+- email (String): Email associated with the OTP.
+- otp (String): The generated one-time password.
+- expires_at (Timestamp): Expiration time for the OTP.
+- created_at / updated_at: Timestamps.
