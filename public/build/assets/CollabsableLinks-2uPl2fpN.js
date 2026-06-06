@@ -1,0 +1,1 @@
+import{j as e,L as a}from"./app-JcKz1vU5.js";function x({href:t="#",active:l=!1,name:r="name"}){return e.jsx("li",{children:e.jsx(a,{href:t,className:`flex items-center p-2  rounded-lg text-base   ml-10 group ${l?"text-blue-700 dark:text-blue-500 ":"text-gray-900 dark:text-white hover:text-blue-700 hover:dark:text-blue-500 "}`,children:r})})}export{x as default};
