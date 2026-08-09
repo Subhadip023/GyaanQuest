@@ -35,4 +35,10 @@ return [
         ],
     ],
 
+    'workhub' => [
+        'url' => env('WORKHUB_API_URL', 'https://workhub.subhadip.online/api/tasks'),
+        'key' => env('WORKHUB_API_KEY', ''),
+        'secret' => env('WORKHUB_API_SECRET', ''),
+    ],
+
 ];

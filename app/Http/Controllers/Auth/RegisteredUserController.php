@@ -43,6 +43,10 @@ class RegisteredUserController extends Controller
             'email_verified_at' => now(),
         ]);
 
+        if (\Spatie\Permission\Models\Role::where('name', 'student')->exists()) {
+            $user->assignRole('student');
+        }
+
         event(new Registered($user));
 
         Auth::login($user);

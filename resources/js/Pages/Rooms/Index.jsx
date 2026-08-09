@@ -2,6 +2,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, useForm, router } from '@inertiajs/react';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import FormModal from '@/Components/FormModal';
 
 export default function Index({ ownedRooms = [], joinedRooms = [] }) {
     const [tab, setTab] = useState('joined'); // 'joined' | 'owned'
@@ -121,70 +122,62 @@ export default function Index({ ownedRooms = [], joinedRooms = [] }) {
             </div>
 
             {/* Create Room Modal */}
-            {showCreate && (
-                <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
-                    <div className="bg-white rounded-2xl w-full max-w-md p-8 shadow-2xl">
-                        <h2 className="text-2xl font-bold text-gray-800 mb-6">Create a Room</h2>
-                        <form onSubmit={handleCreate} className="space-y-4">
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Room Name</label>
-                                <input
-                                    type="text"
-                                    value={createForm.data.name}
-                                    onChange={e => createForm.setData('name', e.target.value)}
-                                    className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-400 outline-none"
-                                    placeholder="e.g. Grade 10 Science"
-                                    required
-                                />
-                                {createForm.errors.name && <p className="text-red-500 text-xs mt-1">{createForm.errors.name}</p>}
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Description (optional)</label>
-                                <textarea
-                                    value={createForm.data.description}
-                                    onChange={e => createForm.setData('description', e.target.value)}
-                                    className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-400 outline-none h-24 resize-none"
-                                    placeholder="What is this room about?"
-                                />
-                            </div>
-                            <div className="flex gap-3 pt-2">
-                                <button type="button" onClick={() => setShowCreate(false)} className="flex-1 py-2 border border-gray-200 rounded-xl font-semibold text-gray-600 hover:bg-gray-50">Cancel</button>
-                                <button type="submit" disabled={createForm.processing} className="flex-1 py-2 bg-indigo-600 text-white rounded-xl font-semibold hover:bg-indigo-700 disabled:opacity-50">
-                                    {createForm.processing ? 'Creating...' : 'Create Room'}
-                                </button>
-                            </div>
-                        </form>
-                    </div>
+            <FormModal
+                show={showCreate}
+                onClose={() => setShowCreate(false)}
+                onSubmit={handleCreate}
+                title="Create a Room"
+                description="Set up a virtual classroom for your students."
+                submitText="Create Room"
+                processing={createForm.processing}
+            >
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Room Name</label>
+                    <input
+                        type="text"
+                        value={createForm.data.name}
+                        onChange={e => createForm.setData('name', e.target.value)}
+                        className="w-full border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-400 outline-none"
+                        placeholder="e.g. Grade 10 Science"
+                        required
+                    />
+                    {createForm.errors.name && <p className="text-red-500 text-xs mt-1">{createForm.errors.name}</p>}
                 </div>
-            )}
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Description (optional)</label>
+                    <textarea
+                        value={createForm.data.description}
+                        onChange={e => createForm.setData('description', e.target.value)}
+                        className="w-full border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl px-4 py-3 focus:ring-2 focus:ring-indigo-400 outline-none h-24 resize-none"
+                        placeholder="What is this room about?"
+                    />
+                </div>
+            </FormModal>
 
             {/* Join Room Modal */}
-            {showJoin && (
-                <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
-                    <div className="bg-white rounded-2xl w-full max-w-sm p-8 shadow-2xl text-center">
-                        <h2 className="text-2xl font-bold text-gray-800 mb-2">Join a Room</h2>
-                        <p className="text-gray-500 text-sm mb-6">Enter the 6-character room code provided by your teacher.</p>
-                        <form onSubmit={handleJoin} className="space-y-4">
-                            <input
-                                type="text"
-                                value={joinForm.data.code}
-                                onChange={e => joinForm.setData('code', e.target.value.toUpperCase())}
-                                maxLength={6}
-                                className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 text-center text-2xl font-mono tracking-widest focus:ring-2 focus:ring-indigo-400 outline-none uppercase"
-                                placeholder="ABC123"
-                                required
-                            />
-                            {joinForm.errors.code && <p className="text-red-500 text-xs">{joinForm.errors.code}</p>}
-                            <div className="flex gap-3">
-                                <button type="button" onClick={() => setShowJoin(false)} className="flex-1 py-2 border border-gray-200 rounded-xl font-semibold text-gray-600 hover:bg-gray-50">Cancel</button>
-                                <button type="submit" disabled={joinForm.processing} className="flex-1 py-2 bg-indigo-600 text-white rounded-xl font-semibold hover:bg-indigo-700 disabled:opacity-50">
-                                    {joinForm.processing ? 'Joining...' : 'Join'}
-                                </button>
-                            </div>
-                        </form>
-                    </div>
+            <FormModal
+                show={showJoin}
+                onClose={() => setShowJoin(false)}
+                onSubmit={handleJoin}
+                title="Join a Room"
+                description="Enter the 6-character room code provided by your teacher."
+                submitText="Join Room"
+                processing={joinForm.processing}
+                maxWidth="sm"
+            >
+                <div>
+                    <input
+                        type="text"
+                        value={joinForm.data.code}
+                        onChange={e => joinForm.setData('code', e.target.value.toUpperCase())}
+                        maxLength={6}
+                        className="w-full border-2 border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-xl px-4 py-3 text-center text-2xl font-mono tracking-widest focus:ring-2 focus:ring-indigo-400 outline-none uppercase"
+                        placeholder="ABC123"
+                        required
+                    />
+                    {joinForm.errors.code && <p className="text-red-500 text-xs mt-1 text-center">{joinForm.errors.code}</p>}
                 </div>
-            )}
+            </FormModal>
         </AuthenticatedLayout>
     );
 }

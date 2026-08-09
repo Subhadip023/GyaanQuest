@@ -2,10 +2,10 @@ import React, { useState, useEffect } from "react";
 import { Head, Link, usePage } from "@inertiajs/react";
 import DarkModeBtn from "@/Components/DarkModeBtn";
 import UserDetails from "@/Components/UserDetails";
-import logo from "../../../public/images/image.png";
 import { ToastContainer, toast } from 'react-toastify';
 import Loader from "@/Components/Loader";
 import AdminSideBar from "@/Components/AdminSideBar";
+import ReportIssueModal from "@/Components/ReportIssueModal";
 
 function AdminLayout({
     title = "Admin",
@@ -18,6 +18,8 @@ function AdminLayout({
     loading = false,
 }) {
     const [isSideBarOpen, setIsSideBarOpen] = useState(true);
+    const [showIssueModal, setShowIssueModal] = useState(false);
+
     const successMessage = usePage().props.flash?.success;
     const errorMessage = usePage().props.flash?.error;
     const [searchValue, setSearchValue] = useState("");
@@ -37,21 +39,20 @@ function AdminLayout({
             });
         }
     }, [successMessage, errorMessage]);
+
     useEffect(() => {
         if (localStorage.getItem("theme") === "dark") {
             document.documentElement.classList.add("dark");
         }
     }, []);
 
-
     useEffect(() => {
         if (searchValue.trim() === "") {
-            searchFunction(null)
+            searchFunction(null);
         } else {
-            searchFunction(searchValue)
+            searchFunction(searchValue);
         }
     }, [searchValue]);
-
 
     return (
         <>
@@ -62,16 +63,10 @@ function AdminLayout({
                 <div className="w-full flex flex-wrap items-center justify-between mx-auto p-4">
                     <div className="flex gap-x-5 items-center ml-5">
                         <Link
-                            href={route('admin')}
-                            className="flex items-center  space-x-3 rtl:space-x-reverse"
+                            href={route('dashboard')}
+                            className="flex items-center space-x-3 rtl:space-x-reverse"
                         >
-                            {/* <img
-                                src={logo}
-                                className="absolute hidden sm:flex top-0.5 left-0  w-32"
-                                alt=""
-                                style={{ marginTop: "-20.5px" }}
-                            /> */}
-                            <span className="self-center text-2xl font-semibold whitespace-nowrap text-blue-700 dark:text-blue-500 ">
+                            <span className="self-center text-2xl font-semibold whitespace-nowrap text-blue-700 dark:text-blue-500">
                                 GyaanQuest
                             </span>
                         </Link>
@@ -79,7 +74,7 @@ function AdminLayout({
                         <button
                             data-collapse-toggle="navbar-user"
                             type="button"
-                            className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg  hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+                            className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
                             aria-controls="navbar-user"
                             aria-expanded="false"
                             onClick={() => setIsSideBarOpen((prev) => !prev)}
@@ -102,29 +97,7 @@ function AdminLayout({
                             </svg>
                         </button>
                     </div>
-                    {/* <button
-                        type="button"
-                     
-                        className="md:hidden text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5 me-1"
-                       
-                                                >
-                        <svg
-                            className="w-5 h-5"
-                            aria-hidden="true"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 20 20"
-                        >
-                            <path
-                                stroke="currentColor"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-                            />
-                        </svg>
-                        <span className="sr-only">Search</span>
-                    </button> */}
+
                     <div className="relative hidden md:block">
                         <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                             <svg
@@ -153,7 +126,20 @@ function AdminLayout({
                         />
                     </div>
 
-                    <div className="flex gap-x-5">
+                    <div className="flex items-center gap-x-3">
+                        {/* Report Issue Button */}
+                        <button
+                            type="button"
+                            onClick={() => setShowIssueModal(true)}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-rose-600 bg-rose-50 hover:bg-rose-100 border border-rose-200 dark:bg-rose-950/50 dark:text-rose-300 dark:border-rose-800 dark:hover:bg-rose-900/60 rounded-lg transition shadow-sm cursor-pointer"
+                            title="Report a bug or problem"
+                        >
+                            <svg className="w-4 h-4 text-rose-500 dark:text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                            </svg>
+                            <span className="hidden sm:inline">Report Issue</span>
+                        </button>
+
                         <DarkModeBtn />
                         <UserDetails />
                     </div>
@@ -161,26 +147,30 @@ function AdminLayout({
             </nav>
 
             <AdminSideBar isSideBarOpen={isSideBarOpen} />
+
             <main
-                className={`bg-slate-100 dark:bg-slate-700 dark:text-white overflow-y-auto scrollbar h-[88vh] p-5 ${isSideBarOpen ? "md:ml-64" : "ml-0"
-                    }`}
+                className={`bg-slate-100 dark:bg-slate-700 dark:text-white overflow-y-auto scrollbar h-[88vh] p-5 ${
+                    isSideBarOpen ? "md:ml-64" : "ml-0"
+                }`}
             >
-                {showHeading && <div
-                    className=" text-blue-700 dark:text-blue-500
-                 flex items-center font-bold text-4xl justify-start"
-                >
-                    <div className="flex items-center p-5">
-
-                        {/* <img src={logo} className="hidden sm:flex w-24" alt="" /> */}
-
-                        {heading}</div>
-
-                </div>}
+                {showHeading && (
+                    <div className="text-blue-700 dark:text-blue-500 flex items-center font-bold text-4xl justify-start">
+                        <div className="flex items-center p-5">
+                            {heading}
+                        </div>
+                    </div>
+                )}
                 <div className={`${showBgBox ? 'bg-white p-5 dark:bg-gray-800 dark:text-white shadow-lg min-h-24 h-fit' : ''}`}>
                     <ToastContainer position="top-right" autoClose={5000} />
                     {children}
                 </div>
             </main>
+
+            {/* Report Issue Modal */}
+            <ReportIssueModal
+                show={showIssueModal}
+                onClose={() => setShowIssueModal(false)}
+            />
         </>
     );
 }

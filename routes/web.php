@@ -30,8 +30,13 @@ Route::get('/', function () {
     ]);
 });
 
+use App\Http\Controllers\IssueReportController;
+
 // ─── Authenticated Routes ─────────────────────────────────────────────────────
 Route::middleware('auth')->group(function () {
+
+    // Issues & Bug Reports
+    Route::post('/issues', [IssueReportController::class, 'store'])->name('issues.store');
 
     // Dashboard
     Route::get('/dashboard', DashBoardController::class)->name('dashboard');

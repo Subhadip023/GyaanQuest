@@ -1,24 +1,27 @@
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import AdminLayout from '@/Layouts/AdminLayout';
 import { Head, Link, router } from '@inertiajs/react';
 
 export default function InvitationsIndex({ invitations = [] }) {
     const accept = (token) => router.get(route('invitations.accept', token));
 
     return (
-        <AuthenticatedLayout header={<h2 className="text-xl font-semibold text-gray-800">📬 My Invitations</h2>}>
-            <Head title="Invitations" />
-
-            <div className="py-10 px-4 max-w-3xl mx-auto space-y-4">
+        <AdminLayout
+            title="Invitations"
+            heading="📬 My Quiz Invitations"
+            showHeading={true}
+            showBgBox={false}
+        >
+            <div className="max-w-3xl mx-auto space-y-4">
                 {invitations.length === 0 ? (
-                    <div className="text-center py-20 bg-white rounded-3xl border border-gray-100">
+                    <div className="text-center py-20 bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700">
                         <p className="text-5xl mb-4">📭</p>
-                        <p className="text-gray-400 text-lg">No pending invitations.</p>
+                        <p className="text-gray-400 dark:text-gray-500 text-lg">No pending invitations.</p>
                     </div>
                 ) : invitations.map(inv => (
-                    <div key={inv.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex items-center justify-between">
+                    <div key={inv.id} className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-6 flex items-center justify-between">
                         <div>
-                            <h3 className="font-bold text-gray-800">{inv.quiz?.name}</h3>
-                            <p className="text-sm text-gray-400 mt-1">
+                            <h3 className="font-bold text-gray-800 dark:text-white">{inv.quiz?.name}</h3>
+                            <p className="text-sm text-gray-400 dark:text-gray-500 mt-1">
                                 Expires {new Date(inv.expires_at).toLocaleDateString()}
                             </p>
                         </div>
@@ -31,6 +34,6 @@ export default function InvitationsIndex({ invitations = [] }) {
                     </div>
                 ))}
             </div>
-        </AuthenticatedLayout>
+        </AdminLayout>
     );
 }
