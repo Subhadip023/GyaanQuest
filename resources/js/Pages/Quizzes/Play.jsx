@@ -10,9 +10,7 @@ export default function Play({ auth, quiz, flash }) {
     const [selectedAnswers, setSelectedAnswers] = useState({});
     const [showResults, setShowResults] = useState(false);
 
-    const { data, setData, post, processing } = useForm({
-        answers: {},
-    });
+    const { data, setData, post, processing } = useForm({ answers: {} });
 
     useEffect(() => {
         setData('answers', selectedAnswers);
@@ -20,32 +18,42 @@ export default function Play({ auth, quiz, flash }) {
 
     const currentQuestion = questions[currentIndex];
     const progress = questions.length > 0 ? ((currentIndex + 1) / questions.length) * 100 : 0;
+    const type = currentQuestion?.type;
 
     const handleSelect = (answerId) => {
-        console.log('Selected answer:', answerId, 'for question:', currentQuestion.id);
-        setSelectedAnswers(prev => ({
-            ...prev,
-            [currentQuestion.id]: answerId
+        setSelectedAnswers(prev => ({ ...prev, [currentQuestion.id]: answerId }));
+    };
+
+    const handleMultiSelect = (answerId) => {
+        const prev = selectedAnswers[currentQuestion.id] ?? [];
+        const exists = prev.includes(answerId);
+        setSelectedAnswers(s => ({
+            ...s,
+            [currentQuestion.id]: exists ? prev.filter(id => id !== answerId) : [...prev, answerId],
         }));
     };
 
+    const handleText = (value) => {
+        setSelectedAnswers(prev => ({ ...prev, [currentQuestion.id]: value }));
+    };
+
+    const isAnswered = () => {
+        const ans = selectedAnswers[currentQuestion?.id];
+        if (type === 'multiple_correct') return Array.isArray(ans) && ans.length > 0;
+        if (type === 'saq' || type === 'fill_blank' || type === 'long') return typeof ans === 'string' && ans.trim().length > 0;
+        return ans != null;
+    };
+
     const handleNext = () => {
-        if (currentIndex < questions.length - 1) {
-            setCurrentIndex(currentIndex + 1);
-        } else {
-            setShowResults(true);
-        }
+        if (currentIndex < questions.length - 1) setCurrentIndex(currentIndex + 1);
+        else setShowResults(true);
     };
 
     const handlePrev = () => {
-        if (currentIndex > 0) {
-            setCurrentIndex(currentIndex - 1);
-        }
+        if (currentIndex > 0) setCurrentIndex(currentIndex - 1);
     };
 
-    const handleSubmit = () => {
-        post(route('quizzes.submit', quiz.id));
-    };
+    const handleSubmit = () => post(route('quizzes.submit', quiz.id));
 
     if (questions.length === 0) {
         return (
@@ -65,12 +73,8 @@ export default function Play({ auth, quiz, flash }) {
             auth={auth}
             header={
                 <div className="flex items-center justify-between">
-                    <h2 className="text-xl font-semibold leading-tight text-gray-800">
-                        {quiz.name}
-                    </h2>
-                    <span className="text-sm font-medium text-gray-500">
-                        Question {currentIndex + 1} of {questions.length}
-                    </span>
+                    <h2 className="text-xl font-semibold leading-tight text-gray-800">{quiz.name}</h2>
+                    <span className="text-sm font-medium text-gray-500">Question {currentIndex + 1} of {questions.length}</span>
                 </div>
             }
         >
@@ -80,11 +84,7 @@ export default function Play({ auth, quiz, flash }) {
                 <div className="mx-auto max-w-4xl sm:px-6 lg:px-8">
                     {/* Progress Bar */}
                     <div className="mb-8 overflow-hidden bg-gray-200 rounded-full h-2.5">
-                        <motion.div 
-                            initial={{ width: 0 }}
-                            animate={{ width: `${progress}%` }}
-                            className="bg-blue-600 h-2.5 rounded-full"
-                        ></motion.div>
+                        <motion.div initial={{ width: 0 }} animate={{ width: `${progress}%` }} className="bg-blue-600 h-2.5 rounded-full" />
                     </div>
 
                     <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
@@ -98,112 +98,140 @@ export default function Play({ auth, quiz, flash }) {
                                         exit={{ x: -20, opacity: 0 }}
                                         transition={{ duration: 0.3 }}
                                     >
-                                        <h3 className="text-2xl font-bold text-gray-900 mb-6">
-                                            {currentQuestion.question}
-                                        </h3>
+                                        {/* Question image */}
+                                        {currentQuestion.image && (
+                                            <img
+                                                src={`/storage/${currentQuestion.image}`}
+                                                alt="question visual"
+                                                className="w-full max-h-64 object-contain rounded-xl mb-6 border border-gray-100"
+                                            />
+                                        )}
 
-                                        <div className="space-y-4">
-                                            {currentQuestion.answers.map((answer) => (
-                                                <div 
-                                                    key={answer.id}
-                                                    onClick={() => handleSelect(answer.id)}
-                                                    className={`
-                                                        p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 flex items-center gap-4
-                                                        ${selectedAnswers[currentQuestion.id] === answer.id 
-                                                            ? 'border-blue-500 bg-blue-50 shadow-md' 
-                                                            : 'border-gray-100 hover:border-gray-300 hover:bg-gray-50'}
-                                                    `}
-                                                >
-                                                    <div className={`
-                                                        w-6 h-6 rounded-full border-2 flex items-center justify-center
-                                                        ${selectedAnswers[currentQuestion.id] === answer.id 
-                                                            ? 'border-blue-500 bg-blue-500' 
-                                                            : 'border-gray-300'}
-                                                    `}>
-                                                        {selectedAnswers[currentQuestion.id] === answer.id && (
-                                                            <div className="w-2 h-2 rounded-full bg-white"></div>
-                                                        )}
+                                        <span className={`inline-block px-3 py-1 rounded-full text-xs font-bold mb-4 ${
+                                            type === 'multiple_correct' ? 'bg-purple-100 text-purple-700' :
+                                            type === 'fill_blank' ? 'bg-orange-100 text-orange-700' :
+                                            type === 'saq' || type === 'long' ? 'bg-blue-100 text-blue-700' :
+                                            'bg-indigo-100 text-indigo-700'
+                                        }`}>
+                                            {type === 'mcq' ? 'Single Choice' :
+                                             type === 'multiple_correct' ? 'Select All That Apply' :
+                                             type === 'true_false' ? 'True / False' :
+                                             type === 'saq' ? 'Short Answer' :
+                                             type === 'fill_blank' ? 'Fill in the Blank' :
+                                             'Long Answer'}
+                                        </span>
+
+                                        <h3 className="text-2xl font-bold text-gray-900 mb-6">{currentQuestion.question}</h3>
+
+                                        {/* MCQ / True-False */}
+                                        {(type === 'mcq' || type === 'true_false') && (
+                                            <div className="space-y-4">
+                                                {(type === 'true_false'
+                                                    ? [{ id: 'true', answare: 'True' }, { id: 'false', answare: 'False' }]
+                                                    : currentQuestion.answers
+                                                ).map((answer) => (
+                                                    <div
+                                                        key={answer.id}
+                                                        onClick={() => handleSelect(answer.id)}
+                                                        className={`p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 flex items-center gap-4
+                                                            ${selectedAnswers[currentQuestion.id] === answer.id
+                                                                ? 'border-blue-500 bg-blue-50 shadow-md'
+                                                                : 'border-gray-100 hover:border-gray-300 hover:bg-gray-50'}`}
+                                                    >
+                                                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0
+                                                            ${selectedAnswers[currentQuestion.id] === answer.id ? 'border-blue-500 bg-blue-500' : 'border-gray-300'}`}>
+                                                            {selectedAnswers[currentQuestion.id] === answer.id && <div className="w-2 h-2 rounded-full bg-white" />}
+                                                        </div>
+                                                        <span className="text-lg text-gray-700">{answer.answare}</span>
                                                     </div>
-                                                    <span className="text-lg text-gray-700">{answer.answare}</span>
-                                                </div>
-                                            ))}
-                                        </div>
+                                                ))}
+                                            </div>
+                                        )}
+
+                                        {/* Multiple Correct — checkboxes */}
+                                        {type === 'multiple_correct' && (
+                                            <div className="space-y-4">
+                                                {currentQuestion.answers.map(answer => {
+                                                    const chosen = (selectedAnswers[currentQuestion.id] ?? []).includes(answer.id);
+                                                    return (
+                                                        <div
+                                                            key={answer.id}
+                                                            onClick={() => handleMultiSelect(answer.id)}
+                                                            className={`p-4 rounded-xl border-2 cursor-pointer transition-all flex items-center gap-4
+                                                                ${chosen ? 'border-purple-500 bg-purple-50 shadow-md' : 'border-gray-100 hover:border-gray-300 hover:bg-gray-50'}`}
+                                                        >
+                                                            <div className={`w-6 h-6 rounded border-2 flex items-center justify-center flex-shrink-0
+                                                                ${chosen ? 'border-purple-500 bg-purple-500' : 'border-gray-300'}`}>
+                                                                {chosen && <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>}
+                                                            </div>
+                                                            <span className="text-lg text-gray-700">{answer.answare}</span>
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        )}
+
+                                        {/* SAQ / Fill in Blank */}
+                                        {(type === 'saq' || type === 'fill_blank') && (
+                                            <input
+                                                type="text"
+                                                value={selectedAnswers[currentQuestion.id] ?? ''}
+                                                onChange={e => handleText(e.target.value)}
+                                                className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 text-lg focus:border-blue-500 outline-none transition"
+                                                placeholder={type === 'fill_blank' ? 'Fill in the blank…' : 'Type your answer…'}
+                                            />
+                                        )}
+
+                                        {/* Long Answer */}
+                                        {type === 'long' && (
+                                            <textarea
+                                                value={selectedAnswers[currentQuestion.id] ?? ''}
+                                                onChange={e => handleText(e.target.value)}
+                                                rows={5}
+                                                className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 text-base focus:border-blue-500 outline-none transition resize-none"
+                                                placeholder="Write your detailed answer here…"
+                                            />
+                                        )}
 
                                         <div className="mt-10 flex justify-between h-12">
-                                            <Button 
-                                                btnType="outline" 
-                                                onClick={handlePrev}
-                                                disabled={currentIndex === 0}
-                                            >
-                                                Previous
-                                            </Button>
-                                            
+                                            <Button btnType="outline" onClick={handlePrev} disabled={currentIndex === 0}>Previous</Button>
                                             {currentIndex === questions.length - 1 ? (
-                                                <Button 
-                                                    btnType="primary" 
-                                                    onClick={handleNext}
-                                                    disabled={!selectedAnswers[currentQuestion.id]}
-                                                >
-                                                    Finish Quiz
-                                                </Button>
+                                                <Button btnType="primary" onClick={handleNext} disabled={!isAnswered()}>Finish Quiz</Button>
                                             ) : (
-                                                <Button 
-                                                    btnType="primary" 
-                                                    onClick={handleNext}
-                                                    disabled={!selectedAnswers[currentQuestion.id]}
-                                                >
-                                                    Next Question
-                                                </Button>
+                                                <Button btnType="primary" onClick={handleNext} disabled={!isAnswered()}>Next Question</Button>
                                             )}
                                         </div>
                                     </motion.div>
                                 </AnimatePresence>
                             ) : flash.score ? (
-                                <motion.div 
-                                    initial={{ scale: 0.9, opacity: 0 }}
-                                    animate={{ scale: 1, opacity: 1 }}
-                                    className="text-center py-8"
-                                >
+                                <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="text-center py-8">
                                     <div className="mb-6 inline-flex items-center justify-center w-24 h-24 rounded-full bg-green-100">
                                         <span className="text-4xl">🏆</span>
                                     </div>
                                     <h3 className="text-3xl font-bold text-gray-900 mb-2">Quiz Completed!</h3>
                                     <p className="text-gray-600 mb-8">Great job on finishing {quiz.name}.</p>
-                                    
                                     <div className="bg-gray-50 rounded-2xl p-8 max-w-sm mx-auto mb-10">
-                                        <div className="text-5xl font-extrabold text-blue-600 mb-2">
-                                            {Math.round(flash.score)}%
-                                        </div>
-                                        <div className="text-gray-500 font-medium">
-                                            Score: {flash.correctCount} / {flash.totalCount}
-                                        </div>
+                                        <div className="text-5xl font-extrabold text-blue-600 mb-2">{Math.round(flash.score)}%</div>
+                                        <div className="text-gray-500 font-medium">Score: {flash.correctCount} / {flash.totalCount}</div>
                                     </div>
-
-                                    <Link href={route('dashboard')}>
-                                        <Button btnType="primary" className="px-10 py-3 text-lg">
-                                            Back to Dashboard
-                                        </Button>
-                                    </Link>
+                                    <div className="flex gap-4 justify-center">
+                                        <Link href={route('leaderboard.quiz', quiz.id)}>
+                                            <Button btnType="outline" className="px-8">View Leaderboard</Button>
+                                        </Link>
+                                        <Link href={route('dashboard')}>
+                                            <Button btnType="primary" className="px-10 py-3 text-lg">Back to Dashboard</Button>
+                                        </Link>
+                                    </div>
                                 </motion.div>
                             ) : (
                                 <div className="text-center py-10">
                                     <h3 className="text-2xl font-bold text-gray-900 mb-6">Ready to submit?</h3>
                                     <p className="text-gray-600 mb-10">You've answered all questions. Review your answers or submit now.</p>
-                                    
                                     <div className="flex flex-col gap-4 max-w-xs mx-auto">
-                                        <Button 
-                                            btnType="primary" 
-                                            className="w-full justify-center"
-                                            onClick={handleSubmit}
-                                            disabled={processing}
-                                        >
+                                        <Button btnType="primary" className="w-full justify-center" onClick={handleSubmit} disabled={processing}>
                                             {processing ? 'Submitting...' : 'Submit Now'}
                                         </Button>
-                                        <Button 
-                                            btnType="outline" 
-                                            className="w-full justify-center"
-                                            onClick={() => setShowResults(false)}
-                                        >
+                                        <Button btnType="outline" className="w-full justify-center" onClick={() => setShowResults(false)}>
                                             Review Answers
                                         </Button>
                                     </div>

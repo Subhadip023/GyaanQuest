@@ -182,9 +182,11 @@ function Index({ questions, quizzes }) {
                     : createQuestionForm.setData('type', val)
                 }
                 options={[
-                  { value: 'mcq', label: 'MCQ' },
+                  { value: 'mcq', label: 'MCQ (Single)' },
+                  { value: 'multiple_correct', label: 'Multi-Select' },
                   { value: 'true_false', label: 'True/False' },
-                  { value: 'saq', label: 'SAQ' },
+                  { value: 'saq', label: 'Short Answer' },
+                  { value: 'fill_blank', label: 'Fill in the Blank' },
                   { value: 'long', label: 'Long Answer' },
                 ]}
                 className="mt-2"

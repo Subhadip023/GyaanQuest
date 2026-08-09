@@ -51,6 +51,24 @@ export default function AuthenticatedLayout({ header, children }) {
                                 >
                                     Dashboard
                                 </NavLink>
+                                <NavLink
+                                    href={route('rooms.index')}
+                                    active={route().current('rooms.*')}
+                                >
+                                    Rooms
+                                </NavLink>
+                                <NavLink
+                                    href={route('leaderboard.index')}
+                                    active={route().current('leaderboard.*')}
+                                >
+                                    Leaderboard
+                                </NavLink>
+                                <NavLink
+                                    href={route('invitations.index')}
+                                    active={route().current('invitations.*')}
+                                >
+                                    Invitations
+                                </NavLink>
                             </div>
                         </div>
 
@@ -154,6 +172,24 @@ export default function AuthenticatedLayout({ header, children }) {
                             active={route().current('dashboard')}
                         >
                             Dashboard
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            href={route('rooms.index')}
+                            active={route().current('rooms.*')}
+                        >
+                            Rooms
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            href={route('leaderboard.index')}
+                            active={route().current('leaderboard.*')}
+                        >
+                            Leaderboard
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            href={route('invitations.index')}
+                            active={route().current('invitations.*')}
+                        >
+                            Invitations
                         </ResponsiveNavLink>
                     </div>
 

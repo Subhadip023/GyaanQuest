@@ -8,7 +8,6 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 
-
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
@@ -23,6 +22,10 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'avatar',
+        'bio',
+        'institution',
+        'skills',
     ];
 
     /**
@@ -44,11 +47,13 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'password'          => 'hashed',
+            'skills'            => 'array',
         ];
     }
 
-    // Relationships
+    // ─── Relationships ────────────────────────────────────────────────────
+
     public function scores()
     {
         return $this->hasMany(Score::class);
@@ -60,4 +65,25 @@ class User extends Authenticatable
             ->withPivot('score')
             ->withTimestamps();
     }
+
+    /** Rooms this user owns (teacher) */
+    public function ownedRooms()
+    {
+        return $this->hasMany(Room::class);
+    }
+
+    /** Rooms this user belongs to as a member */
+    public function rooms()
+    {
+        return $this->belongsToMany(Room::class, 'room_members')
+            ->withPivot('role')
+            ->withTimestamps();
+    }
+
+    /** Quiz invitations received */
+    public function quizInvitations()
+    {
+        return $this->hasMany(QuizInvitation::class);
+    }
 }
+

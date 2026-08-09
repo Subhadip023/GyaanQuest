@@ -11,19 +11,36 @@ class Quiz extends Model
 
     /** @use HasFactory<\Database\Factories\QuizFactory> */
     use HasFactory;
-    protected $fillable = ['name', 'description', 'user_id', 'display', 'active'];
+
+    protected $fillable = [
+        'name',
+        'description',
+        'user_id',
+        'display',
+        'active',
+        'access_code',
+        'time_limit',
+    ];
+
+    protected $casts = [
+        'active' => 'boolean',
+    ];
+
+    // ─── Relationships ────────────────────────────────────────────────────
 
     public function question()
     {
         return $this->hasMany(Question::class);
     }
+
     public function scores()
     {
         return $this->hasMany(Score::class);
     }
 
-    public function creator(){
-        return $this->belongsTo(User::class);
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function users()
@@ -32,4 +49,17 @@ class Quiz extends Model
             ->withPivot('score')
             ->withTimestamps();
     }
+
+    public function rooms()
+    {
+        return $this->belongsToMany(Room::class, 'room_quizzes')
+            ->withPivot(['available_from', 'available_until'])
+            ->withTimestamps();
+    }
+
+    public function invitations()
+    {
+        return $this->hasMany(QuizInvitation::class);
+    }
 }
+

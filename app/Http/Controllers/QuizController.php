@@ -9,8 +9,8 @@ use App\Http\Requests\UpdateQuizRequest;
 use App\Repositories\Interfaces\QuizRepositoryInterface;
 use App\Repositories\Interfaces\ScoreRepositoryInterface;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
-use App\Models\Answare;
 
 
 class QuizController extends Controller
@@ -60,40 +60,76 @@ class QuizController extends Controller
     }
 
     /**
-     * Submit the quiz and calculate score.
+     * Submit the quiz and calculate score (supports all question types).
      */
     public function submit(Request $request, Quiz $quiz)
     {
-        $userAnswers = $request->input('answers'); // Format: [question_id => answer_id]
-        $questions = $quiz->question()->with('answers')->get();
-        
-        $correctCount = 0;
+        // answers format: [question_id => answer_id] for MCQ/TF
+        // or [question_id => [answer_id, ...]] for multiple_correct
+        // or [question_id => "text"] for saq/fill_blank
+        $userAnswers  = $request->input('answers', []);
+        $questions    = $quiz->question()->with('answers')->get();
         $totalQuestions = $questions->count();
+        $correctCount   = 0;
 
         foreach ($questions as $question) {
-            $submittedAnswerId = $userAnswers[$question->id] ?? null;
-            $correctAnswer = $question->answers->where('is_correct', true)->first();
+            $submitted = $userAnswers[$question->id] ?? null;
 
-            if ($submittedAnswerId && $correctAnswer && $submittedAnswerId == $correctAnswer->id) {
-                $correctCount++;
+            switch ($question->type) {
+                // ── Single-choice MCQ / True-False ────────────────────────
+                case 'mcq':
+                case 'true_false':
+                    $correctAnswer = $question->answers->where('is_correct', true)->first();
+                    if ($submitted && $correctAnswer && $submitted == $correctAnswer->id) {
+                        $correctCount++;
+                    }
+                    break;
+
+                // ── Multiple Correct ──────────────────────────────────────
+                case 'multiple_correct':
+                    if (is_array($submitted)) {
+                        $correctIds   = $question->answers->where('is_correct', true)->pluck('id')->sort()->values()->toArray();
+                        $submittedIds = collect($submitted)->map(fn ($v) => (int) $v)->sort()->values()->toArray();
+                        if ($correctIds === $submittedIds) {
+                            $correctCount++;
+                        }
+                    }
+                    break;
+
+                // ── Short Answer / Fill in the Blank (case-insensitive) ───
+                case 'saq':
+                case 'fill_blank':
+                    $correctAnswer = $question->answers->where('is_correct', true)->first();
+                    if ($submitted && $correctAnswer) {
+                        $normalize = fn ($s) => strtolower(trim($s));
+                        if ($normalize($submitted) === $normalize($correctAnswer->answare)) {
+                            $correctCount++;
+                        }
+                    }
+                    break;
+
+                // ── Long Answer (manually graded, no auto-score) ──────────
+                case 'long':
+                default:
+                    break;
             }
         }
 
-        $scorePercentage = $totalQuestions > 0 ? ($correctCount / $totalQuestions) * 100 : 0;
+        $scorePercentage = $totalQuestions > 0
+            ? round(($correctCount / $totalQuestions) * 100, 2)
+            : 0;
 
-        $scoreData = [
+        $this->score_repo->create([
             'quiz_id' => $quiz->id,
             'user_id' => auth()->id(),
-            'score' => $scorePercentage,
-        ];
-
-        $this->score_repo->create($scoreData);
+            'score'   => $scorePercentage,
+        ]);
 
         return redirect()->back()->with([
-            'success' => 'Quiz submitted successfully!',
-            'score' => $scorePercentage,
+            'success'      => 'Quiz submitted successfully!',
+            'score'        => $scorePercentage,
             'correctCount' => $correctCount,
-            'totalCount' => $totalQuestions,
+            'totalCount'   => $totalQuestions,
         ]);
     }
 
@@ -129,9 +165,8 @@ class QuizController extends Controller
 
             return redirect()->back()->with('success', 'Quiz deleted successfully!');
         } catch (\Exception $e) {
-            // return redirect()->back()->with('error', 'Failed to delete quiz. ' . $e->getMessage());
-            log::error('Failed to delete quiz: ' . $e->getsMessage());
-            
+            Log::error('Failed to delete quiz: ' . $e->getMessage());
+
             return redirect()->back()->with('error', 'Failed to delete quiz.');
         }
     }
